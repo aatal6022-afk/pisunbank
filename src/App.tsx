@@ -101,7 +101,7 @@ export default function App() {
           merchantName: merchant || 'Внешний Магазин',
           recipientCardNumber: recipient,
           amount: numAmount,
-          description: desc || 'Оплата счёта через Писюн Банк Pay',
+          description: desc || 'Оплата счёта через Банк Королевства Лаймия Pay',
           returnUrl: returnUrl || undefined,
         });
       }
@@ -244,8 +244,8 @@ export default function App() {
         <div className="p-4 rounded-xl bg-white border border-zinc-200 mb-4 animate-pulse shadow-sm">
           <ShieldCheck className="w-8 h-8 text-zinc-900" />
         </div>
-        <h2 className="text-lg font-bold">Загрузка Банка номер один в НЯСР</h2>
-        <p className="text-xs text-zinc-500 mt-1">Страна писюнов (НЯСР)</p>
+        <h2 className="text-lg font-bold">Загрузка Банка Королевства Лаймия</h2>
+        <p className="text-xs text-zinc-500 mt-1">Королевство Лаймия</p>
       </div>
     );
   }
@@ -296,7 +296,7 @@ export default function App() {
               <Wallet className="w-3.5 h-3.5 text-amber-500" />
               <span>
                 {activeCard.cardType === 'treasury'
-                  ? 'Баланс Государственной Казны Страны писюнов (НЯСР)'
+                  ? 'Баланс Государственной Казны Королевства Лаймия'
                   : activeCard.cardType === 'business'
                   ? 'Баланс бизнес-счета'
                   : 'Баланс счета'}
@@ -407,8 +407,8 @@ export default function App() {
                 </h3>
                 <p className="text-xs text-zinc-300">
                   {isSupremeAdmin(currentUser) 
-                    ? 'Вам доступен выпуск валюты (PUSH) и мониторинг балансов всех граждан Страны писюнов (НЯСР).'
-                    : 'Вам доступен мониторинг балансов граждан Страны писюнов (НЯСР) и блокировка счетов.'}
+                    ? 'Вам доступен выпуск валюты (Королевский Франк) и мониторинг балансов всех граждан Королевства Лаймия.'
+                    : 'Вам доступен мониторинг балансов граждан Королевства Лаймия и блокировка счетов.'}
                 </p>
               </div>
             </div>
@@ -551,8 +551,8 @@ export default function App() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center space-x-2">
             <ShieldCheck className="w-5 h-5 text-zinc-300" />
-            <span className="font-bold text-zinc-600">Писюн Банк</span>
-            <span>— Страна писюнов (НЯСР)</span>
+            <span className="font-bold text-zinc-600">Банк Королевства Лаймия</span>
+            <span>— Королевство Лаймия</span>
           </div>
 
           <div className="text-[11px] flex flex-wrap items-center gap-2">

@@ -64,7 +64,7 @@ export const FreezeModal: React.FC<FreezeModalProps> = ({
     setSuccessMsg(null);
 
     if (freezeDays < 14) {
-      setError('По Указу НЯСР №2 минимальный срок заморозки — 14 календарных дней!');
+      setError('По Указу Королевства Лаймия №2 минимальный срок заморозки — 14 календарных дней!');
       return;
     }
 
@@ -123,9 +123,9 @@ export const FreezeModal: React.FC<FreezeModalProps> = ({
             </div>
             <div>
               <div className="text-[11px] uppercase tracking-wider text-sky-300 font-extrabold flex items-center gap-1.5">
-                <span>Указ НЯСР №2</span>
+                <span>Указ Лаймии №2</span>
                 <span className="w-1 h-1 rounded-full bg-sky-400"></span>
-                <span>Писюн Банк</span>
+                <span>Банк Королевства Лаймия</span>
               </div>
               <h2 className="text-xl font-black text-white">Заморозка Счета</h2>
             </div>
@@ -199,7 +199,7 @@ export const FreezeModal: React.FC<FreezeModalProps> = ({
               <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200 text-xs space-y-2.5 text-zinc-700">
                 <div className="font-bold text-zinc-900 flex items-center gap-1.5 text-xs">
                   <FileText className="w-4 h-4 text-sky-600" />
-                  <span>Правила заморозки по Указу НЯСР №2:</span>
+                  <span>Правила заморозки по Указу Королевства Лаймия №2:</span>
                 </div>
                 <ul className="space-y-1.5 pl-1">
                   <li className="flex items-start gap-2">
@@ -281,7 +281,7 @@ export const FreezeModal: React.FC<FreezeModalProps> = ({
                   className="mt-0.5 w-4 h-4 rounded text-sky-600 focus:ring-sky-500 border-zinc-300 cursor-pointer"
                 />
                 <span className="text-xs text-zinc-600 leading-tight">
-                  Я подтверждаю, что ознакомлен с <strong>Указом НЯСР №2</strong>. Я понимаю, что <strong>досрочная разморозка запрещена</strong>, и все операции по карте #{card.cardNumber} будут заблокированы до окончания срока.
+                  Я подтверждаю, что ознакомлен с <strong>Указом Королевства Лаймия №2</strong>. Я понимаю, что <strong>досрочная разморозка запрещена</strong>, и все операции по карте #{card.cardNumber} будут заблокированы до окончания срока.
                 </span>
               </label>
 

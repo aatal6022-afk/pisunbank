@@ -41,7 +41,7 @@ export const app = express();
   app.use((req, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-XSS-Protection', '1; mode=block');
-    res.setHeader('X-NYASR-BANK-SECURITY', 'ACTIVE-256BIT-SSL');
+    res.setHeader('X-LAIMIA-BANK-SECURITY', 'ACTIVE-256BIT-SSL');
     next();
   });
 
@@ -61,7 +61,7 @@ export const app = express();
       if (limitInfo.count > 100) {
         return res.status(429).json({
           success: false,
-          message: 'Система защиты Писюн Банка: Превышен лимит запросов (Anti-DDoS Rate Limit). Попробуйте через минуту.',
+          message: 'Система защиты Банка Королевства Лаймия: Превышен лимит запросов (Anti-DDoS Rate Limit). Попробуйте через минуту.',
         });
       }
     }
@@ -75,10 +75,10 @@ export const app = express();
   app.get('/api/health', (req, res) => {
     res.json({
       status: 'ok',
-      service: 'Писюн Банк',
-      country: 'Страна писюнов (НЯСР)',
-      shortCountry: 'НЯСР',
-      database: isFirebaseConfigured ? 'Firebase Firestore (Пушленд)' : 'Built-in Cloud Storage',
+      service: 'Банк Королевства Лаймия',
+      country: 'Королевство Лаймия',
+      shortCountry: 'Лаймия',
+      database: isFirebaseConfigured ? 'Firebase Firestore (Королевство Лаймия)' : 'Built-in Cloud Storage',
     });
   });
 
@@ -256,7 +256,7 @@ export const app = express();
       if (isNaN(numDays) || numDays < 14) {
         return res.status(400).json({
           success: false,
-          message: 'По Указу Пушленда №2 минимальный срок заморозки счета составляет 14 календарных дней!',
+          message: 'По Указу Королевства Лаймия №2 минимальный срок заморозки счета составляет 14 календарных дней!',
         });
       }
 
@@ -328,7 +328,7 @@ export const app = express();
         taxDeducted,
         card: updatedCard,
         message: taxDeducted > 0
-          ? `Списан налог на бездействие 7% (${taxDeducted.toLocaleString('ru-RU')} PUSH) в пользу Казны Пушленда.`
+          ? `Списан налог на бездействие 7% (${taxDeducted.toLocaleString('ru-RU')} Королевских Франков) в пользу Казны Королевства Лаймия.`
           : 'Налог не требуется (счет активен или защищен заморозкой).',
       });
     } catch (err: any) {
@@ -546,7 +546,7 @@ export const app = express();
   var handler = {
     openCheckout: function(opts) {
       if (!opts || !opts.recipientCardNumber || !opts.amount) {
-        alert('Ошибка Банка номер один в НЯСР Pay: Укажите recipientCardNumber и amount');
+        alert('Ошибка Банка Королевства Лаймия Pay: Укажите recipientCardNumber и amount');
         return;
       }
       var host = window.location.origin;
@@ -564,19 +564,19 @@ export const app = express();
         }
       })
       .catch(function(err) {
-        alert('Сбой связи с Банком номер один в НЯСР: ' + err.message);
+        alert('Сбой связи с Банком Королевства Лаймия: ' + err.message);
       });
     }
   };
-  window.PisyunPay = handler;
   window.MURBANKPay = handler;
-  window.NyasrPay = handler;
+  window.LaimiaPay = handler;
 })();
     `);
   };
 
-  app.get('/pisyun-pay-widget.js', serveWidget);
+  app.get('/laimia-pay-widget.js', serveWidget);
   app.get('/murbank-pay-widget.js', serveWidget);
+  app.get('/pisyun-pay-widget.js', serveWidget);
   app.get('/nyasr-pay-widget.js', serveWidget);
 
   // Get merchant invoices & analytics stats by card number
@@ -605,7 +605,7 @@ export const app = express();
   });
 
   // ------------------------------------------------------------------
-  // MERCHANT ACQUIRING REST API (v1) - FOR EXTERNAL PUSHLAND SITES
+  // MERCHANT ACQUIRING REST API (v1) - FOR EXTERNAL LAIMIA SITES
   // ------------------------------------------------------------------
 
   app.all('/api/v1/payment/charge', async (req, res) => {
@@ -711,7 +711,7 @@ export const app = express();
         success: true,
         cardNumber: card.cardNumber,
         balance: card.balance,
-        currency: 'PUSH',
+        currency: 'Королевский Франк',
       });
     } catch (err: any) {
       res.status(500).json({ success: false, message: err.message });
@@ -851,7 +851,7 @@ export const app = express();
         paid: true,
         transactionId: tx.id,
         amount: tx.amount,
-        currency: 'PUSH',
+        currency: 'Королевский Франк',
         senderName: tx.senderName || 'Скрыт',
         recipientName: tx.recipientName || 'Получатель',
         fromCardNumber: tx.fromCardNumber,

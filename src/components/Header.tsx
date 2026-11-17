@@ -60,7 +60,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div>
             <div className="flex items-center space-x-1.5">
               <span className="text-[9px] sm:text-[10px] font-extrabold tracking-widest text-zinc-500 uppercase">
-                СТРАНА ПИСЮНОВ • НЯСР
+                КОРОЛЕВСТВО ЛАЙМИЯ
               </span>
               {isAdmin && (
                 <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-900 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full">
@@ -81,7 +81,7 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
             <h1 className="text-base sm:text-lg font-black tracking-tight text-zinc-900 leading-tight flex items-center gap-2">
-              Писюн Банк
+              Банк Лаймии
               {isTreasury && (
                 <span className="text-xs font-extrabold text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md">
                   КАЗНА
@@ -133,11 +133,11 @@ export const Header: React.FC<HeaderProps> = ({
           {onOpenLaws && (
             <button
               onClick={onOpenLaws}
-              title="Законы Страны писюнов (НЯСР): Налог 7% и Указ №2"
+              title="Законы Королевства Лаймия: Налог 7% и Указ №2"
               className="hidden md:inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-amber-50/80 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold transition-all cursor-pointer shadow-sm"
             >
               <Scale className="w-4 h-4 text-amber-700" />
-              <span>Законы НЯСР</span>
+              <span>Законы Лаймии</span>
             </button>
           )}
 
@@ -170,7 +170,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Merchant Acquiring Hub Button */}
           <button
             onClick={onOpenMerchantHub}
-            title="Кабинет Продавца и Эквайринг Банка номер один в НЯСР"
+            title="Кабинет Продавца и Эквайринг Банка Королевства Лаймия"
             className="hidden sm:inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300/80 text-xs font-bold transition-all cursor-pointer shadow-sm"
           >
             <Building2 className="w-4 h-4 text-amber-600" />
@@ -180,7 +180,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Security Center Button */}
           <button
             onClick={onOpenSecurity}
-            title="Центр Безопасности Банка номер один в НЯСР"
+            title="Центр Безопасности Банка Королевства Лаймия"
             className="hidden sm:inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-semibold transition-all cursor-pointer shadow-sm"
           >
             <ShieldCheck className="w-4 h-4" />

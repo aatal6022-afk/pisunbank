@@ -92,7 +92,7 @@ export const RegistrationFlow: React.FC<RegistrationFlowProps> = ({
         return;
       }
 
-      setSuccessMsg('Успешный вход в Писюн Банк!');
+      setSuccessMsg('Успешный вход в Банк Королевства Лаймия!');
       setTimeout(() => {
         const primaryCard = data.card || (data.cards && data.cards[0]);
         onRegisterSuccess(data.user, primaryCard);
@@ -245,7 +245,7 @@ export const RegistrationFlow: React.FC<RegistrationFlowProps> = ({
           <div className="flex items-center justify-between relative z-10 mb-3">
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-zinc-900/90 text-amber-400 text-xs font-bold border border-zinc-800">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Страна писюнов (НЯСР)</span>
+              <span>Королевство Лаймия</span>
             </div>
 
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-950/60 border border-amber-500/30 text-amber-300 text-[11px] font-semibold">
@@ -255,7 +255,7 @@ export const RegistrationFlow: React.FC<RegistrationFlowProps> = ({
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white relative z-10">
-            {isAdditionalCard ? 'Выпуск новой карты' : 'Писюн Банк'}
+            {isAdditionalCard ? 'Выпуск новой карты' : 'Банк Королевства Лаймия'}
           </h1>
           <p className="text-zinc-400 text-xs sm:text-sm mt-1.5 relative z-10">
             {isAdditionalCard
@@ -333,7 +333,7 @@ export const RegistrationFlow: React.FC<RegistrationFlowProps> = ({
                     required
                     value={loginIdentifier}
                     onChange={(e) => setLoginIdentifier(e.target.value)}
-                    placeholder="Например: ИВАН НЯСР или 450088889999"
+                    placeholder="Например: ИВАН ЛАЙМИЯ или 450088889999"
                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-300 focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10 text-sm font-medium transition-all outline-none"
                   />
                 </div>
@@ -386,27 +386,27 @@ export const RegistrationFlow: React.FC<RegistrationFlowProps> = ({
                   <button
                     type="button"
                     disabled={loading}
-                    onClick={() => handleQuickDemoLogin('КАЗНА НЯСР', 'admin')}
+                    onClick={() => handleQuickDemoLogin('450000000001', 'admin')}
                     className="p-2.5 rounded-xl border border-amber-300/80 bg-amber-50/70 hover:bg-amber-100 text-left transition-all cursor-pointer group"
                   >
                     <div className="flex items-center space-x-1.5 text-xs font-black text-amber-950">
                       <Crown className="w-3.5 h-3.5 text-amber-600" />
                       <span>Казна (Админ)</span>
                     </div>
-                    <div className="text-[10px] text-amber-800 mt-0.5">Логин: КАЗНА НЯСР</div>
+                    <div className="text-[10px] text-amber-800 mt-0.5">Логин: КАЗНА ЛАЙМИИ</div>
                   </button>
 
                   <button
                     type="button"
                     disabled={loading}
-                    onClick={() => handleQuickDemoLogin('ИВАН НЯСР', '123')}
+                    onClick={() => handleQuickDemoLogin('450088889999', '123')}
                     className="p-2.5 rounded-xl border border-zinc-200 bg-zinc-50 hover:bg-zinc-100 text-left transition-all cursor-pointer group"
                   >
                     <div className="flex items-center space-x-1.5 text-xs font-black text-zinc-900">
                       <CreditCard className="w-3.5 h-3.5 text-zinc-600" />
                       <span>Иван Гражданин</span>
                     </div>
-                    <div className="text-[10px] text-zinc-500 mt-0.5">Баланс: 75 000 PUSH</div>
+                    <div className="text-[10px] text-zinc-500 mt-0.5">75 000 Королевских Франков</div>
                   </button>
                 </div>
               </div>
@@ -429,7 +429,7 @@ export const RegistrationFlow: React.FC<RegistrationFlowProps> = ({
                     required
                     value={regNickname}
                     onChange={(e) => setRegNickname(e.target.value)}
-                    placeholder="Например: ALEX_NYASR или DMITRY"
+                    placeholder="Например: ALEX_LAIMIA или DMITRY"
                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-300 focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10 text-sm font-medium transition-all outline-none"
                   />
                 </div>
@@ -499,7 +499,7 @@ export const RegistrationFlow: React.FC<RegistrationFlowProps> = ({
                   >
                     <div className="w-7 h-5 rounded bg-zinc-200 border border-zinc-300 mb-2 shadow-xs" />
                     <div className="font-extrabold text-xs text-zinc-900">Белая карта</div>
-                    <div className="text-[10px] text-zinc-500 mt-0.5">Гражданская • 0 PUSH</div>
+                    <div className="text-[10px] text-zinc-500 mt-0.5">Гражданская • 0 Королевских Франков</div>
                     <div className="text-[9px] text-emerald-700 font-semibold mt-1">
                       Переводы и кредиты 5%
                     </div>
@@ -518,7 +518,7 @@ export const RegistrationFlow: React.FC<RegistrationFlowProps> = ({
                       Черная карта
                     </div>
                     <div className={`text-[10px] ${cardType === 'business' ? 'text-zinc-400' : 'text-zinc-500'} mt-0.5`}>
-                      Бизнес • 0 PUSH
+                      Бизнес • 0 Королевских Франков
                     </div>
                     <div className={`text-[9px] font-semibold mt-1 ${cardType === 'business' ? 'text-amber-400' : 'text-amber-600'}`}>
                       Эквайринг & REST API
@@ -597,7 +597,7 @@ export const RegistrationFlow: React.FC<RegistrationFlowProps> = ({
             </div>
 
             <div className="flex items-center justify-between text-[10px] text-zinc-400">
-              <span>Писюн Банк • Государственный Банк</span>
+              <span>Банк Королевства Лаймия • Государственный Банк</span>
               <button
                 type="button"
                 onClick={() => {

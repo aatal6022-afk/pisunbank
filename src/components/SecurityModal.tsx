@@ -49,7 +49,7 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
                   100%
                 </span>
               </div>
-              <p className="text-[11px] sm:text-xs text-zinc-400">Система защиты данных Страны писюнов (НЯСР)</p>
+              <p className="text-[11px] sm:text-xs text-zinc-400">Система защиты данных Королевства Лаймия</p>
             </div>
           </div>
           <button
@@ -104,7 +104,7 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
               <div className="p-4 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 flex items-start space-x-3">
                 <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
                 <div className="text-xs text-emerald-200 leading-relaxed">
-                  Все протоколы безопасности Банка номер один в НЯСР функционируют в штатном режиме. Серверные API защищены встроенным лимитером запросов, база данных надёжно защищена правилами доступа.
+                  Все протоколы безопасности Банка Королевства Лаймия функционируют в штатном режиме. Серверные API защищены встроенным лимитером запросов, база данных надёжно защищена правилами доступа.
                 </div>
               </div>
 
@@ -145,7 +145,7 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
                     <span className="text-xs font-bold text-white">Firestore Rules Isolation</span>
                   </div>
                   <p className="text-[11px] text-zinc-400">
-                    Облачная база данных Страны писюнов (НЯСР) с проверкой целостности структуры
+                    Облачная база данных Королевства Лаймия с проверкой целостности структуры
                   </p>
                 </div>
               </div>
@@ -161,7 +161,7 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
                 </h4>
                 <ul className="text-xs text-zinc-300 space-y-2 list-disc list-inside">
                   <li><strong className="text-white">Лимит попыток CVV:</strong> Блокировка операций с картой при 3 неверных вводах CVV.</li>
-                  <li><strong className="text-white">Крупные суммы:</strong> Автоматический контроль транзакций свыше 100,000 PUSH.</li>
+                  <li><strong className="text-white">Крупные суммы:</strong> Автоматический контроль транзакций свыше 100,000 Королевских Франков.</li>
                   <li><strong className="text-white">Защита от овердрафта:</strong> Серверный контроль баланса перед списанием средств.</li>
                   <li><strong className="text-white">Проверка карт:</strong> Маскирование 12-значных номеров карт в логах сервера.</li>
                 </ul>
@@ -211,7 +211,7 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
         <div className="p-4 bg-zinc-950 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-400">
           <div className="flex items-center space-x-2">
             <Globe className="w-4 h-4 text-emerald-400" />
-            <span>Защита Банка номер один в НЯСР • Страна писюнов (НЯСР)</span>
+            <span>Защита Банка Королевства Лаймия • Королевство Лаймия</span>
           </div>
           <button
             onClick={onClose}

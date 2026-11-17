@@ -61,7 +61,7 @@ export const CreditModal: React.FC<CreditModalProps> = ({
   const handleApplyCredit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (numAmount < 1000) {
-      setError('Минимальная сумма государственной ссуды: 1 000 писиков');
+      setError('Минимальная сумма государственной ссуды: 1 000 Королевских Франков');
       return;
     }
 
@@ -156,7 +156,7 @@ export const CreditModal: React.FC<CreditModalProps> = ({
 
           <h2 className="text-lg sm:text-2xl font-black text-zinc-900">Кредит 5% Годовых</h2>
           <p className="text-xs text-zinc-500 mt-0.5">
-            Моментальное зачисление средств на карту Банка номер один в НЯСР
+            Моментальное зачисление средств на карту Банка Королевства Лаймия
           </p>
 
           {/* Sub Navigation Tabs */}
@@ -213,7 +213,7 @@ export const CreditModal: React.FC<CreditModalProps> = ({
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <label className="block text-xs font-bold text-slate-800">
-                    Сумма кредита (в писиках)
+                    Сумма кредита (в Королевских Франках)
                   </label>
                   <span className="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
                     Фиксированная ставка 5%
@@ -231,9 +231,9 @@ export const CreditModal: React.FC<CreditModalProps> = ({
                       setAmount(e.target.value);
                       setError('');
                     }}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 font-bold text-xl text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none"
+                    className="w-full px-4 py-3 pr-24 rounded-xl border border-slate-300 font-bold text-xl text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none"
                   />
-                  <span className="absolute right-4 top-3.5 font-bold text-slate-400">писиков</span>
+                  <span className="absolute right-4 top-3.5 font-bold text-slate-400 text-sm">франков</span>
                 </div>
 
                 {/* Amount presets */}
@@ -326,7 +326,7 @@ export const CreditModal: React.FC<CreditModalProps> = ({
               ) : activeCredits.length === 0 ? (
                 <div className="text-center py-12 text-zinc-500 text-sm">
                   <Landmark className="w-12 h-12 mx-auto text-zinc-300 mb-2" />
-                  У вас нет активных кредитов в Банке номер один в НЯСР
+                  У вас нет активных кредитов в Банке Королевства Лаймия
                 </div>
               ) : (
                 activeCredits.map((credit) => (

@@ -25,6 +25,7 @@ import {
   TreasuryStats,
   CurrencyEmissionRequest,
 } from '../src/types.js';
+import { normalizeLegacyBrandText } from '../src/utils/formatCurrency.js';
 
 export const ADMIN_EMAILS = [
   'aatal6022@gmail.com',
@@ -35,6 +36,11 @@ export function isAdminEmail(email?: string): boolean {
   if (!email) return false;
   const clean = email.trim().toLowerCase();
   return ADMIN_EMAILS.some((adm) => adm.toLowerCase() === clean);
+}
+
+function hasLegacyBrand(text?: string): boolean {
+  if (!text) return false;
+  return /НЯСР|Пушленд|nyasr|Писюн|пис[ию]к|\bPUSH\b/i.test(text);
 }
 
 // Load Firebase Config
@@ -70,9 +76,107 @@ if (isFirebaseConfigured) {
 
 class FirebaseDatabaseService {
   private seeded = false;
+  private seedPromise: Promise<void>;
 
   constructor() {
-    this.seedInitialData();
+    this.seedPromise = this.seedInitialData();
+  }
+
+  private sanitizeUser(user: User): User {
+    return {
+      ...user,
+      name: normalizeLegacyBrandText(user.name),
+      fullName: user.fullName ? normalizeLegacyBrandText(user.fullName) : user.fullName,
+      gameNickname: normalizeLegacyBrandText(user.gameNickname),
+      email: user.email === 'ivan.nyasr@gmail.com' ? 'ivan.laimia@gmail.com' : user.email,
+    };
+  }
+
+  private sanitizeCard(card: BankCard): BankCard {
+    return {
+      ...card,
+      cardHolderName: normalizeLegacyBrandText(card.cardHolderName),
+    };
+  }
+
+  private sanitizeTransaction(tx: Transaction): Transaction {
+    return {
+      ...tx,
+      senderName: normalizeLegacyBrandText(tx.senderName),
+      recipientName: normalizeLegacyBrandText(tx.recipientName),
+      description: normalizeLegacyBrandText(tx.description),
+    };
+  }
+
+  private async migrateSeededBrandRecords() {
+    if (!firestore) return;
+
+    const userPatches: Array<{ id: string; fields: Partial<User> }> = [
+      {
+        id: 'usr_govt',
+        fields: {
+          name: 'Главный Казначей Королевства Лаймия',
+          fullName: 'Верховный Банкир Королевства Лаймия',
+          gameNickname: 'КАЗНА ЛАЙМИИ',
+        },
+      },
+      {
+        id: 'usr_legacy_admin',
+        fields: {
+          name: 'Главный Казначей Королевства Лаймия',
+          gameNickname: 'КАЗНА ЛАЙМИИ',
+        },
+      },
+      {
+        id: 'usr_ivan',
+        fields: {
+          email: 'ivan.laimia@gmail.com',
+          gameNickname: 'ИВАН ЛАЙМИЯ',
+        },
+      },
+    ];
+
+    for (const patch of userPatches) {
+      const ref = doc(firestore, 'users', patch.id);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) continue;
+      const data = snap.data() as User;
+      const updates: Record<string, string> = {};
+      if (patch.fields.name && hasLegacyBrand(data.name)) updates.name = patch.fields.name;
+      if (patch.fields.fullName && hasLegacyBrand(data.fullName)) updates.fullName = patch.fields.fullName;
+      if (patch.fields.gameNickname && hasLegacyBrand(data.gameNickname)) updates.gameNickname = patch.fields.gameNickname;
+      if (patch.fields.email && hasLegacyBrand(data.email)) updates.email = patch.fields.email;
+      if (Object.keys(updates).length > 0) {
+        await updateDoc(ref, updates);
+      }
+    }
+
+    const cardPatches: Array<{ id: string; cardHolderName: string }> = [
+      { id: 'crd_treasury', cardHolderName: 'КАЗНА ЛАЙМИИ' },
+      { id: 'crd_ivan', cardHolderName: 'ИВАН ЛАЙМИЯ' },
+    ];
+
+    for (const patch of cardPatches) {
+      const ref = doc(firestore, 'cards', patch.id);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) continue;
+      const data = snap.data() as BankCard;
+      if (hasLegacyBrand(data.cardHolderName)) {
+        await updateDoc(ref, { cardHolderName: patch.cardHolderName });
+      }
+    }
+
+    const txRef = doc(firestore, 'transactions', 'tx_init_1');
+    const txSnap = await getDoc(txRef);
+    if (txSnap.exists()) {
+      const data = txSnap.data() as Transaction;
+      const updates: Record<string, string> = {};
+      if (hasLegacyBrand(data.senderName)) updates.senderName = 'Казна Королевства Лаймия';
+      if (hasLegacyBrand(data.description)) updates.description = 'Подъемные субсидии от Минфина Королевства Лаймия';
+      if (Object.keys(updates).length > 0) {
+        await updateDoc(txRef, updates);
+      }
+    }
   }
 
   async seedInitialData() {
@@ -82,6 +186,7 @@ class FirebaseDatabaseService {
     try {
       const treasuryDoc = await getDoc(doc(firestore, 'cards', 'crd_treasury'));
       if (treasuryDoc.exists()) {
+        await this.migrateSeededBrandRecords();
         return; // Already initialized
       }
 
@@ -93,9 +198,9 @@ class FirebaseDatabaseService {
         email: 'aatal6022@gmail.com',
         password: 'admin',
         googleId: 'google_treasury_admin',
-        name: 'Главный Казначей Пушленда',
-        fullName: 'Верховный Банкир Пушленда',
-        gameNickname: 'КАЗНА НЯСР',
+        name: 'Главный Казначей Королевства Лаймия',
+        fullName: 'Верховный Банкир Королевства Лаймия',
+        gameNickname: 'КАЗНА ЛАЙМИИ',
         avatar: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=100&auto=format&fit=crop&q=80',
         createdAt: new Date().toISOString(),
         isAdmin: true,
@@ -107,8 +212,8 @@ class FirebaseDatabaseService {
         id: 'usr_legacy_admin',
         email: 'pinkiscammerinfo@gmail.com',
         password: 'admin',
-        name: 'Главный Казначей НЯСР',
-        gameNickname: 'КАЗНА НЯСР',
+        name: 'Главный Казначей Королевства Лаймия',
+        gameNickname: 'КАЗНА ЛАЙМИИ',
         avatar: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=100&auto=format&fit=crop&q=80',
         createdAt: new Date().toISOString(),
         isAdmin: true,
@@ -118,23 +223,23 @@ class FirebaseDatabaseService {
       // 3. Demo citizen user Ivan
       const ivanUser: User = {
         id: 'usr_ivan',
-        email: 'ivan.nyasr@gmail.com',
+        email: 'ivan.laimia@gmail.com',
         password: '123',
         googleId: 'google_ivan_demo',
         name: 'Иван Гражданин',
-        gameNickname: 'ИВАН НЯСР',
+        gameNickname: 'ИВАН ЛАЙМИЯ',
         avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80',
         createdAt: new Date().toISOString(),
         isAdmin: false,
         isEmployee: false,
       };
 
-      // 4. Treasury Card (1,000,000,000 PUSH, Gold, CVV 777)
+      // 4. Treasury Card (1,000,000,000 Королевских Франков, Gold, CVV 777)
       const govtCard: BankCard = {
         id: 'crd_treasury',
         userId: 'usr_govt',
         cardNumber: '450000000001',
-        cardHolderName: 'КАЗНА НЯСР',
+        cardHolderName: 'КАЗНА ЛАЙМИИ',
         cardType: 'treasury',
         color: 'gold',
         balance: 1000000000,
@@ -145,12 +250,12 @@ class FirebaseDatabaseService {
         lastActivityDate: new Date().toISOString(),
       };
 
-      // 5. Citizen Card (75,000 PUSH, White, CVV 123)
+      // 5. Citizen Card (75,000 Королевских Франков, White, CVV 123)
       const ivanCard: BankCard = {
         id: 'crd_ivan',
         userId: 'usr_ivan',
         cardNumber: '450088889999',
-        cardHolderName: 'ИВАН НЯСР',
+        cardHolderName: 'ИВАН ЛАЙМИЯ',
         cardType: 'regular',
         color: 'white',
         balance: 75000,
@@ -168,11 +273,11 @@ class FirebaseDatabaseService {
         cardNumber: '450088889999',
         fromCardNumber: '450000000001',
         toCardNumber: '450088889999',
-        senderName: 'Казна Государства Пушленд',
+        senderName: 'Казна Королевства Лаймия',
         recipientName: 'Иван Гражданин',
         amount: 75000,
         type: 'transfer_in',
-        description: 'Подъемные субсидии от Минфина виртуальной страны Пушленд',
+        description: 'Подъемные субсидии от Минфина Королевства Лаймия',
         createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
       };
 
@@ -212,16 +317,18 @@ class FirebaseDatabaseService {
   }
 
   async getUsers(): Promise<User[]> {
+    await this.seedPromise;
     if (!firestore) return [];
     const snapshot = await getDocs(collection(firestore, 'users'));
-    return snapshot.docs.map((d) => d.data() as User);
+    return snapshot.docs.map((d) => this.sanitizeUser(d.data() as User));
   }
 
   async getUserById(id: string): Promise<User | undefined> {
+    await this.seedPromise;
     if (!firestore) return undefined;
     const docSnap = await getDoc(doc(firestore, 'users', id));
     if (docSnap.exists()) {
-      return docSnap.data() as User;
+      return this.sanitizeUser(docSnap.data() as User);
     }
     return undefined;
   }
@@ -229,12 +336,22 @@ class FirebaseDatabaseService {
   async getUserByNickname(nickname: string): Promise<User | undefined> {
     if (!firestore) return undefined;
     const clean = nickname.trim().toUpperCase();
+    const lower = nickname.trim().toLowerCase();
+    const aliases = new Set([clean]);
+    if (clean === 'КАЗНА ЛАЙМИИ' || clean === 'КАЗНА НЯСР') {
+      aliases.add('КАЗНА ЛАЙМИИ');
+      aliases.add('КАЗНА НЯСР');
+    }
+    if (clean === 'ИВАН ЛАЙМИЯ' || clean === 'ИВАН НЯСР') {
+      aliases.add('ИВАН ЛАЙМИЯ');
+      aliases.add('ИВАН НЯСР');
+    }
     const allUsers = await this.getUsers();
     return allUsers.find(
       (u) =>
-        u.gameNickname?.toUpperCase() === clean ||
-        u.name?.toUpperCase() === clean ||
-        u.email?.toLowerCase() === nickname.trim().toLowerCase()
+        (u.gameNickname && aliases.has(u.gameNickname.toUpperCase())) ||
+        (u.name && aliases.has(u.name.toUpperCase())) ||
+        u.email?.toLowerCase() === lower
     );
   }
 
@@ -242,6 +359,7 @@ class FirebaseDatabaseService {
     username: string,
     password: string
   ): Promise<{ user: User; cards: BankCard[] } | null> {
+    await this.seedPromise;
     const cleanInput = username.trim();
     if (!cleanInput) return null;
 
@@ -253,7 +371,7 @@ class FirebaseDatabaseService {
       if (card && firestore) {
         const uDoc = await getDoc(doc(firestore, 'users', card.userId));
         if (uDoc.exists()) {
-          user = uDoc.data() as User;
+          user = this.sanitizeUser(uDoc.data() as User);
         }
       }
     }
@@ -277,7 +395,7 @@ class FirebaseDatabaseService {
     }
 
     const cards = await this.getCardsByUserId(user.id);
-    return { user, cards };
+    return { user: this.sanitizeUser(user), cards };
   }
 
   async getUserByGoogleId(googleId: string): Promise<User | undefined> {
@@ -312,7 +430,7 @@ class FirebaseDatabaseService {
     }
 
     const cards = await this.getCardsByUserId(user.id);
-    return { user, cards };
+    return { user: this.sanitizeUser(user), cards };
   }
 
   async loginOrRegisterWithGoogle(googleUser: {
@@ -478,25 +596,28 @@ class FirebaseDatabaseService {
   }
 
   async getCards(): Promise<BankCard[]> {
+    await this.seedPromise;
     if (!firestore) return [];
     const snapshot = await getDocs(collection(firestore, 'cards'));
-    return snapshot.docs.map((d) => d.data() as BankCard);
+    return snapshot.docs.map((d) => this.sanitizeCard(d.data() as BankCard));
   }
 
   async getCardsByUserId(userId: string): Promise<BankCard[]> {
+    await this.seedPromise;
     if (!firestore) return [];
     const q = query(collection(firestore, 'cards'), where('userId', '==', userId));
     const snap = await getDocs(q);
-    return snap.docs.map((d) => d.data() as BankCard);
+    return snap.docs.map((d) => this.sanitizeCard(d.data() as BankCard));
   }
 
   async getCardByNumber(cardNumber: string): Promise<BankCard | undefined> {
+    await this.seedPromise;
     if (!firestore) return undefined;
     const clean = cardNumber.replace(/\s+/g, '');
     const q = query(collection(firestore, 'cards'), where('cardNumber', '==', clean));
     const snap = await getDocs(q);
     if (!snap.empty) {
-      return snap.docs[0].data() as BankCard;
+      return this.sanitizeCard(snap.docs[0].data() as BankCard);
     }
     return undefined;
   }
@@ -540,7 +661,7 @@ class FirebaseDatabaseService {
     if (fromCard.balance < amount) {
       return {
         success: false,
-        message: `Недостаточно средств. Ваш баланс: ${fromCard.balance.toLocaleString('ru-RU')} PUSH`,
+        message: `Недостаточно средств. Ваш баланс: ${fromCard.balance.toLocaleString('ru-RU')} Королевских Франков`,
       };
     }
 
@@ -597,7 +718,7 @@ class FirebaseDatabaseService {
 
     return {
       success: true,
-      message: `Успешно переведено ${amount.toLocaleString('ru-RU')} PUSH на карту ${toCard.cardNumber}`,
+      message: `Успешно переведено ${amount.toLocaleString('ru-RU')} Королевских Франков на карту ${toCard.cardNumber}`,
       fromCard,
       toCard,
     };
@@ -620,10 +741,10 @@ class FirebaseDatabaseService {
     const toCard = await this.getCardByNumber(toClean);
 
     if (!fromCard) {
-      return { success: false, message: `Карта списания ${fromClean} не существует в Банке Пушленда` };
+      return { success: false, message: `Карта списания ${fromClean} не существует в Банке Королевства Лаймия` };
     }
     if (!toCard) {
-      return { success: false, message: `Карта получателя ${toClean} не найдена в Банке Пушленда` };
+      return { success: false, message: `Карта получателя ${toClean} не найдена в Банке Королевства Лаймия` };
     }
 
     if (cvv && fromCard.cvv !== String(cvv).trim()) {
@@ -633,7 +754,7 @@ class FirebaseDatabaseService {
     if (fromCard.balance < amount) {
       return {
         success: false,
-        message: `Недостаточно средств на карте списания. Баланс: ${fromCard.balance.toLocaleString('ru-RU')} PUSH`,
+        message: `Недостаточно средств на карте списания. Баланс: ${fromCard.balance.toLocaleString('ru-RU')} Королевских Франков`,
       };
     }
 
@@ -672,7 +793,7 @@ class FirebaseDatabaseService {
 
     return {
       success: true,
-      message: `Успешно переведено ${amount.toLocaleString('ru-RU')} PUSH на карту ${toCard.cardNumber}`,
+      message: `Успешно переведено ${amount.toLocaleString('ru-RU')} Королевских Франков на карту ${toCard.cardNumber}`,
       card: toCard,
       transactionId: txId,
       balance: updatedToBal,
@@ -704,7 +825,7 @@ class FirebaseDatabaseService {
     if (card.balance < amount) {
       return {
         success: false,
-        message: `Недостаточно средств. Баланс: ${card.balance.toLocaleString('ru-RU')} PUSH`,
+        message: `Недостаточно средств. Баланс: ${card.balance.toLocaleString('ru-RU')} Королевских Франков`,
       };
     }
 
@@ -738,7 +859,7 @@ class FirebaseDatabaseService {
     return {
       success: true,
       transactionId: txId,
-      message: `Оплата на сумму ${amount.toLocaleString('ru-RU')} PUSH успешно проведена`,
+      message: `Оплата на сумму ${amount.toLocaleString('ru-RU')} Королевских Франков успешно проведена`,
       remainingBalance: newBal,
       cardNumber: card.cardNumber,
     };
@@ -756,7 +877,7 @@ class FirebaseDatabaseService {
     if (days < 14) {
       return {
         success: false,
-        message: 'По Указу Пушленда №2 минимальный срок заморозки счета составляет 14 дней!',
+        message: 'По Указу Королевства Лаймия №2 минимальный срок заморозки счета составляет 14 дней!',
       };
     }
 
@@ -821,7 +942,7 @@ class FirebaseDatabaseService {
         fromCardNumber: card.cardNumber,
         toCardNumber: '450000000001',
         senderName: card.cardHolderName,
-        recipientName: 'Казна Пушленда',
+        recipientName: 'Казна Королевства Лаймия',
         amount: tax,
         type: 'tax_inactivity',
         description: `Списание налога на бездействие 7% (${diffDays} дней неактивности)`,
@@ -904,7 +1025,7 @@ class FirebaseDatabaseService {
       cardNumber: card.cardNumber,
       fromCardNumber: '450000000001',
       toCardNumber: card.cardNumber,
-      senderName: 'Кредитный фонд ПИСЮН БАНКА',
+      senderName: 'Кредитный фонд Банка Королевства Лаймия',
       recipientName: card.cardHolderName,
       amount,
       type: 'credit_draw',
@@ -916,7 +1037,7 @@ class FirebaseDatabaseService {
 
     return {
       success: true,
-      message: `Кредит на сумму ${amount.toLocaleString('ru-RU')} PUSH одобрен и зачислен на карту!`,
+      message: `Кредит на сумму ${amount.toLocaleString('ru-RU')} Королевских Франков одобрен и зачислен на карту!`,
       loan,
       updatedBalance: newBal,
     };
@@ -944,7 +1065,7 @@ class FirebaseDatabaseService {
     if (card.balance < amount) {
       return {
         success: false,
-        message: `Недостаточно средств на карте. Баланс: ${card.balance.toLocaleString('ru-RU')} PUSH`,
+        message: `Недостаточно средств на карте. Баланс: ${card.balance.toLocaleString('ru-RU')} Королевских Франков`,
       };
     }
 
@@ -976,7 +1097,7 @@ class FirebaseDatabaseService {
       fromCardNumber: card.cardNumber,
       toCardNumber: '450000000001',
       senderName: card.cardHolderName,
-      recipientName: 'Казна Пушленда',
+      recipientName: 'Казна Королевства Лаймия',
       amount: actualPayment,
       type: 'credit_repay',
       description: `Погашение кредита ID ${loan.id}`,
@@ -987,7 +1108,7 @@ class FirebaseDatabaseService {
 
     return {
       success: true,
-      message: `Внесено ${actualPayment.toLocaleString('ru-RU')} PUSH в счет погашения кредита`,
+      message: `Внесено ${actualPayment.toLocaleString('ru-RU')} Королевских Франков в счет погашения кредита`,
       remainingAmount: loan.remainingAmount,
       updatedBalance: newBal,
     };
@@ -1001,6 +1122,7 @@ class FirebaseDatabaseService {
   }
 
   async getTransactionsByCardNumber(cardNumber: string): Promise<Transaction[]> {
+    await this.seedPromise;
     if (!firestore) return [];
     const clean = cardNumber.replace(/\s+/g, '');
     const q1 = query(collection(firestore, 'transactions'), where('fromCardNumber', '==', clean));
@@ -1008,8 +1130,8 @@ class FirebaseDatabaseService {
     const [s1, s2] = await Promise.all([getDocs(q1), getDocs(q2)]);
 
     const map = new Map<string, Transaction>();
-    s1.docs.forEach((d) => map.set(d.id, d.data() as Transaction));
-    s2.docs.forEach((d) => map.set(d.id, d.data() as Transaction));
+    s1.docs.forEach((d) => map.set(d.id, this.sanitizeTransaction(d.data() as Transaction)));
+    s2.docs.forEach((d) => map.set(d.id, this.sanitizeTransaction(d.data() as Transaction)));
 
     return Array.from(map.values()).sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -1017,10 +1139,11 @@ class FirebaseDatabaseService {
   }
 
   async getTransactionById(txId: string): Promise<Transaction | undefined> {
+    await this.seedPromise;
     if (!firestore) return undefined;
     const snap = await getDoc(doc(firestore, 'transactions', txId));
     if (snap.exists()) {
-      return snap.data() as Transaction;
+      return this.sanitizeTransaction(snap.data() as Transaction);
     }
     return undefined;
   }
@@ -1035,7 +1158,7 @@ class FirebaseDatabaseService {
     const invId = `inv_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     const invoice: Invoice = {
       id: invId,
-      merchantName: merchantName || 'Торговец Пушленда',
+      merchantName: merchantName || 'Торговец Королевства Лаймия',
       recipientCardNumber: recipientCardNumber.replace(/\s+/g, ''),
       amount,
       description: description || 'Оплата счёта',
@@ -1101,7 +1224,7 @@ class FirebaseDatabaseService {
     if (payerCard.balance < inv.amount) {
       return {
         success: false,
-        message: `Недостаточно средств. Баланс: ${payerCard.balance.toLocaleString('ru-RU')} PUSH`,
+        message: `Недостаточно средств. Баланс: ${payerCard.balance.toLocaleString('ru-RU')} Королевских Франков`,
       };
     }
 
@@ -1180,7 +1303,7 @@ class FirebaseDatabaseService {
     let allTxs: Transaction[] = [];
     if (firestore) {
       const snap = await getDocs(collection(firestore, 'transactions'));
-      allTxs = snap.docs.map((d) => d.data() as Transaction);
+      allTxs = snap.docs.map((d) => this.sanitizeTransaction(d.data() as Transaction));
     }
 
     const taxTxs = allTxs.filter((t) => t.type === 'tax_inactivity');
@@ -1262,11 +1385,11 @@ class FirebaseDatabaseService {
       cardNumber: targetCard.cardNumber,
       fromCardNumber: 'EMISSION_CENTRAL_BANK',
       toCardNumber: targetCard.cardNumber,
-      senderName: 'Центробанк Пушленда (Эмиссия)',
+      senderName: 'Центробанк Королевства Лаймия (Эмиссия)',
       recipientName: targetCard.cardHolderName,
       amount: req.amount,
       type: 'currency_emission',
-      description: `Государственная эмиссия: ${req.amount.toLocaleString('ru-RU')} PUSH. Указ: ${req.decreeNumber || 'Без номера'}. Причина: ${req.reason || 'Пополнение резервов'}`,
+      description: `Государственная эмиссия: ${req.amount.toLocaleString('ru-RU')} Королевских Франков. Указ: ${req.decreeNumber || 'Без номера'}. Причина: ${req.reason || 'Пополнение резервов'}`,
       createdAt: nowIso,
     };
 
@@ -1275,7 +1398,7 @@ class FirebaseDatabaseService {
     const stats = await this.getTreasuryStats(req.adminEmail);
     return {
       success: true,
-      message: `Эмиссия ${req.amount.toLocaleString('ru-RU')} PUSH успешно проведена и зачислена на карту ${targetCard.cardNumber}!`,
+      message: `Эмиссия ${req.amount.toLocaleString('ru-RU')} Королевских Франков успешно проведена и зачислена на карту ${targetCard.cardNumber}!`,
       stats,
     };
   }

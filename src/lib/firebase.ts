@@ -42,7 +42,7 @@ export async function signInWithGoogle(): Promise<{
     return {
       googleId: u.uid,
       email: u.email || '',
-      name: u.displayName || 'Гражданин Пушленда',
+      name: u.displayName || 'Гражданин Королевства Лаймия',
       avatar: u.photoURL || '',
     };
   } catch (err: any) {

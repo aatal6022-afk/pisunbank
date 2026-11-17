@@ -105,7 +105,7 @@ export const InactivityStatusWidget: React.FC<InactivityStatusWidgetProps> = ({
                 {frozenUntil ? frozenUntil.toLocaleDateString('ru-RU') : 'конца срока'}
               </h4>
               <p className="text-xs text-sky-200/80 leading-tight">
-                Все операции заблокированы. Досрочная разморозка запрещена Законом Страны писюнов (НЯСР).
+                Все операции заблокированы. Досрочная разморозка запрещена Законом Королевства Лаймия.
               </p>
             </div>
           </div>

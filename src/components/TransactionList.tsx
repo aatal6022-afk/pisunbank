@@ -233,7 +233,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({
                         : 'text-zinc-900'
                     }`}
                   >
-                    {isFreeze ? '❄️ 0 писиков' : `${positive ? '+' : '-'}${formatPisiki(tx.amount)}`}
+                    {isFreeze ? '❄️ 0 Королевских Франков' : `${positive ? '+' : '-'}${formatPisiki(tx.amount)}`}
                   </div>
                 </div>
               </div>

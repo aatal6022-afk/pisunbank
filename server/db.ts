@@ -43,9 +43,9 @@ class InMemoryDatabase {
       email: 'aatal6022@gmail.com',
       password: 'admin',
       googleId: 'google_treasury_admin',
-      name: 'Главный Казначей Пушленда',
-      fullName: 'Верховный Банкир Пушленда',
-      gameNickname: 'КАЗНА НЯСР',
+      name: 'Главный Казначей Королевства Лаймия',
+      fullName: 'Верховный Банкир Королевства Лаймия',
+      gameNickname: 'КАЗНА ЛАЙМИИ',
       avatar: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=100&auto=format&fit=crop&q=80',
       createdAt: new Date().toISOString(),
       isAdmin: true,
@@ -56,9 +56,9 @@ class InMemoryDatabase {
       id: 'usr_legacy_govt',
       email: 'pinkiscammerinfo@gmail.com',
       password: 'admin',
-      name: 'Главный Казначей НЯСР',
-      fullName: 'Верховный Банкир НЯСР',
-      gameNickname: 'КАЗНА НЯСР',
+      name: 'Главный Казначей Королевства Лаймия',
+      fullName: 'Верховный Банкир Королевства Лаймия',
+      gameNickname: 'КАЗНА ЛАЙМИИ',
       avatar: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=100&auto=format&fit=crop&q=80',
       createdAt: new Date().toISOString(),
       isAdmin: true,
@@ -67,11 +67,11 @@ class InMemoryDatabase {
 
     const ivanUser: User = {
       id: 'usr_ivan',
-      email: 'ivan.nyasr@gmail.com',
+      email: 'ivan.laimia@gmail.com',
       password: '123',
       googleId: 'google_ivan_demo',
       name: 'Иван Гражданин',
-      gameNickname: 'ИВАН НЯСР',
+      gameNickname: 'ИВАН ЛАЙМИЯ',
       avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80',
       createdAt: new Date().toISOString(),
       isAdmin: false,
@@ -82,7 +82,7 @@ class InMemoryDatabase {
       id: 'crd_treasury',
       userId: 'usr_govt',
       cardNumber: '450000000001',
-      cardHolderName: 'КАЗНА НЯСР',
+      cardHolderName: 'КАЗНА ЛАЙМИИ',
       cardType: 'treasury',
       color: 'gold',
       balance: 1000000000,
@@ -97,7 +97,7 @@ class InMemoryDatabase {
       id: 'crd_ivan',
       userId: 'usr_ivan',
       cardNumber: '450088889999',
-      cardHolderName: 'ИВАН НЯСР',
+      cardHolderName: 'ИВАН ЛАЙМИЯ',
       cardType: 'regular',
       color: 'white',
       balance: 75000,
@@ -114,11 +114,11 @@ class InMemoryDatabase {
       cardNumber: '450088889999',
       fromCardNumber: '450000000001',
       toCardNumber: '450088889999',
-      senderName: 'Казна Государства НЯСР',
+      senderName: 'Казна Королевства Лаймия',
       recipientName: 'Иван Гражданин',
       amount: 75000,
       type: 'transfer_in',
-      description: 'Подъемные субсидии от Минфина Страны писюнов (НЯСР)',
+      description: 'Подъемные субсидии от Минфина Королевства Лаймия',
       createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
     };
 
@@ -158,11 +158,21 @@ class InMemoryDatabase {
 
   async getUserByNickname(nickname: string): Promise<User | undefined> {
     const clean = nickname.trim().toUpperCase();
+    const lower = nickname.trim().toLowerCase();
+    const aliases = new Set([clean]);
+    if (clean === 'КАЗНА ЛАЙМИИ' || clean === 'КАЗНА НЯСР') {
+      aliases.add('КАЗНА ЛАЙМИИ');
+      aliases.add('КАЗНА НЯСР');
+    }
+    if (clean === 'ИВАН ЛАЙМИЯ' || clean === 'ИВАН НЯСР') {
+      aliases.add('ИВАН ЛАЙМИЯ');
+      aliases.add('ИВАН НЯСР');
+    }
     return Array.from(this.users.values()).find(
       (u) =>
-        u.gameNickname?.toUpperCase() === clean ||
-        u.name?.toUpperCase() === clean ||
-        u.email?.toLowerCase() === nickname.trim().toLowerCase()
+        (u.gameNickname && aliases.has(u.gameNickname.toUpperCase())) ||
+        (u.name && aliases.has(u.name.toUpperCase())) ||
+        u.email?.toLowerCase() === lower
     );
   }
 
@@ -257,7 +267,7 @@ class InMemoryDatabase {
           id: 'crd_treasury',
           userId: userId,
           cardNumber: '450000000001',
-          cardHolderName: 'КАЗНА НЯСР',
+          cardHolderName: 'КАЗНА ЛАЙМИИ',
           cardType: 'treasury',
           color: 'gold',
           balance: 1000000000,
@@ -337,9 +347,9 @@ class InMemoryDatabase {
           cardId: card.id,
           cardNumber: card.cardNumber,
           fromCardNumber: card.cardNumber,
-          toCardNumber: 'KAZNA_PUSHLAND',
+          toCardNumber: 'KAZNA_LAIMIA',
           senderName: card.cardHolderName,
-          recipientName: 'Казна Государства НЯСР',
+          recipientName: 'Казна Королевства Лаймия',
           amount: actualTax,
           type: 'tax_inactivity',
           description: `Налог на бездействие средств (7%) по Закону об экономической ответственности`,
@@ -368,7 +378,7 @@ class InMemoryDatabase {
 
     const card = this.cards.get(cardId);
     if (!card) {
-      return { success: false, message: 'Карта не найдена в системе Банка номер один в НЯСР' };
+      return { success: false, message: 'Карта не найдена в системе Банка Королевства Лаймия' };
     }
 
     if (card.isFrozen || card.status === 'frozen') {
@@ -399,12 +409,12 @@ class InMemoryDatabase {
       cardId: card.id,
       cardNumber: card.cardNumber,
       fromCardNumber: card.cardNumber,
-      toCardNumber: 'NYASR_SECURITY',
+      toCardNumber: 'LAIMIA_SECURITY',
       senderName: card.cardHolderName,
-      recipientName: 'Служба Заморозки Банка номер один в НЯСР',
+      recipientName: 'Служба Заморозки Банка Королевства Лаймия',
       amount: 0,
       type: 'account_freeze',
-      description: `Заморозка счета на ${days} дн. (до ${freezeUntil.toLocaleDateString('ru-RU')}) по Указу НЯСР №2`,
+      description: `Заморозка счета на ${days} дн. (до ${freezeUntil.toLocaleDateString('ru-RU')}) по Указу Королевства Лаймия №2`,
       createdAt: now.toISOString(),
     };
     this.transactions.set(freezeTx.id, freezeTx);
@@ -450,8 +460,8 @@ class InMemoryDatabase {
       success: true,
       message:
         taxAmount > 0
-          ? `Симуляция ${days} дней бездействия: списан налог 7% (${taxAmount.toLocaleString('ru-RU')} PUSH) в пользу Казны НЯСР!`
-          : `Симуляция ${days} дней бездействия: баланс 0 PUSH, налог не списан.`,
+          ? `Симуляция ${days} дней бездействия: списан налог 7% (${taxAmount.toLocaleString('ru-RU')} Королевских Франков) в пользу Казны Лаймии!`
+          : `Симуляция ${days} дней бездействия: баланс 0 Королевских Франков, налог не списан.`,
       updatedCard,
       taxApplied: taxAmount > 0,
       taxAmount,
@@ -472,7 +482,7 @@ class InMemoryDatabase {
   async loginOrRegisterWithGoogle(googleData: any): Promise<{ user: User; card: BankCard }> {
     const googleId = googleData.googleId;
     const email = googleData.email || '';
-    const name = googleData.name || 'Гражданин НЯСР';
+    const name = googleData.name || 'Гражданин Королевства Лаймия';
     const avatar = googleData.avatar || '';
 
     let user = Array.from(this.users.values()).find(
@@ -486,7 +496,7 @@ class InMemoryDatabase {
         googleId,
         name,
         fullName: name,
-        gameNickname: isAdminEmail(email) ? 'КАЗНА НЯСР' : name.toUpperCase(),
+        gameNickname: isAdminEmail(email) ? 'КАЗНА ЛАЙМИИ' : name.toUpperCase(),
         avatar,
         createdAt: new Date().toISOString(),
         isAdmin: isAdminEmail(email),
@@ -534,7 +544,7 @@ class InMemoryDatabase {
       user = {
         id: `usr_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
         password: password || undefined,
-        email: `${cleanNick.toLowerCase().replace(/[^a-z0-9]/g, '') || 'citizen'}@nyasr.bank`,
+        email: `${cleanNick.toLowerCase().replace(/[^a-z0-9]/g, '') || 'citizen'}@laimia.bank`,
         name: cleanNick,
         gameNickname: cleanNick.toUpperCase(),
         avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
@@ -590,14 +600,14 @@ class InMemoryDatabase {
 
     if (!senderCard) return { success: false, message: 'Карта отправителя не найдена' };
     if (!recipientCard)
-      return { success: false, message: 'Карта получателя с таким номером не найдена в системе Банка номер один в НЯСР' };
+      return { success: false, message: 'Карта получателя с таким номером не найдена в системе Банка Королевства Лаймия' };
 
     if (senderCard.isFrozen || senderCard.status === 'frozen') {
-      return { success: false, message: 'Операция отклонена: Счет списания заморожен по Указу НЯСР №2.' };
+      return { success: false, message: 'Операция отклонена: Счет списания заморожен по Указу Королевства Лаймия №2.' };
     }
 
     if (recipientCard.isFrozen || recipientCard.status === 'frozen') {
-      return { success: false, message: 'Операция отклонена: Счет получателя заморожен по Указу НЯСР №2.' };
+      return { success: false, message: 'Операция отклонена: Счет получателя заморожен по Указу Королевства Лаймия №2.' };
     }
 
     if (senderCard.status !== 'active') return { success: false, message: 'Карта отправителя неактивна' };
@@ -616,7 +626,7 @@ class InMemoryDatabase {
     this.cards.set(senderCard.id, senderCard);
     this.cards.set(recipientCard.id, recipientCard);
 
-    const description = note || `Перевод средств между картами НЯСР`;
+    const description = note || `Перевод средств между картами Королевства Лаймия`;
 
     const txSender: Transaction = {
       id: `tx_${Date.now()}_out`,
@@ -651,7 +661,7 @@ class InMemoryDatabase {
 
     return {
       success: true,
-      message: `Успешный перевод ${amount.toLocaleString('ru-RU')} PUSH на карту ${recipientCard.cardNumber}`,
+      message: `Успешный перевод ${amount.toLocaleString('ru-RU')} Королевских Франков на карту ${recipientCard.cardNumber}`,
       senderCard,
       recipientCard,
     };
@@ -663,13 +673,13 @@ class InMemoryDatabase {
     termMonths: number = 12
   ): Promise<{ success: boolean; message: string; loan?: CreditLoan; updatedCard?: BankCard }> {
     if (amount < 1000) {
-      return { success: false, message: 'Минимальная сумма кредита 1 000 PUSH' };
+      return { success: false, message: 'Минимальная сумма кредита 1 000 Королевских Франков' };
     }
 
     const card = this.cards.get(cardId);
     if (!card) return { success: false, message: 'Карта не найдена' };
     if (card.isFrozen || card.status === 'frozen') {
-      return { success: false, message: 'Нельзя взять кредит: счет заморожен по Указу НЯСР №2.' };
+      return { success: false, message: 'Нельзя взять кредит: счет заморожен по Указу Королевства Лаймия №2.' };
     }
 
     const interestRate = 5;
@@ -702,9 +712,9 @@ class InMemoryDatabase {
       id: `tx_credit_${Date.now()}`,
       cardId: card.id,
       cardNumber: card.cardNumber,
-      fromCardNumber: 'NYASR_CREDIT_GOVT',
+      fromCardNumber: 'LAIMIA_CREDIT_GOVT',
       toCardNumber: card.cardNumber,
-      senderName: 'Банк номер один в НЯСР (Кредитный отдел)',
+      senderName: 'Банк Королевства Лаймия (Кредитный отдел)',
       recipientName: card.cardHolderName,
       amount,
       type: 'credit_draw',
@@ -715,7 +725,7 @@ class InMemoryDatabase {
 
     return {
       success: true,
-      message: `Кредит на сумму ${amount.toLocaleString('ru-RU')} PUSH под 5% годовых зачислен на карту!`,
+      message: `Кредит на сумму ${amount.toLocaleString('ru-RU')} Королевских Франков под 5% годовых зачислен на карту!`,
       loan,
       updatedCard: card,
     };
@@ -755,9 +765,9 @@ class InMemoryDatabase {
       cardId: card.id,
       cardNumber: card.cardNumber,
       fromCardNumber: card.cardNumber,
-      toCardNumber: 'NYASR_CREDIT_GOVT',
+      toCardNumber: 'LAIMIA_CREDIT_GOVT',
       senderName: card.cardHolderName,
-      recipientName: 'Банк номер один в НЯСР (Погашение кредита)',
+      recipientName: 'Банк Королевства Лаймия (Погашение кредита)',
       amount: actualRepay,
       type: 'credit_repay',
       description: `Погашение кредита ID ${credit.id.slice(-6)}`,
@@ -767,7 +777,7 @@ class InMemoryDatabase {
 
     return {
       success: true,
-      message: `Погашение на сумму ${actualRepay.toLocaleString('ru-RU')} PUSH успешно выполнено!`,
+      message: `Погашение на сумму ${actualRepay.toLocaleString('ru-RU')} Королевских Франков успешно выполнено!`,
       updatedCard: card,
       updatedCredit: credit,
     };
@@ -777,19 +787,19 @@ class InMemoryDatabase {
     cardNumberRaw: string,
     cvv: string,
     amount: number,
-    merchantName: string = 'Внешний Магазин НЯСР',
+    merchantName: string = 'Внешний Магазин Лаймии',
     description: string = 'Оплата на сайте партнера'
   ): Promise<MerchantChargeResponse> {
     const cleanNum = cardNumberRaw.replace(/\s+/g, '');
     const card = await this.getCardByNumber(cleanNum);
 
-    if (!card) return { success: false, message: 'Карта с таким номером не найдена в Банке номер один в НЯСР' };
+    if (!card) return { success: false, message: 'Карта с таким номером не найдена в Банке Королевства Лаймия' };
     if (card.isFrozen || card.status === 'frozen') return { success: false, message: 'Счет плательщика заморожен' };
     if (card.status !== 'active') return { success: false, message: 'Карта заблокирована или неактивна' };
     if (card.cvv !== cvv.trim()) return { success: false, message: 'Неверный CVV код карты' };
     if (amount <= 0) return { success: false, message: 'Некорректная сумма списания' };
     if (card.balance < amount) {
-      return { success: false, message: `Недостаточно средств (Баланс: ${card.balance.toLocaleString('ru-RU')} PUSH)` };
+      return { success: false, message: `Недостаточно средств (Баланс: ${card.balance.toLocaleString('ru-RU')} Королевских Франков)` };
     }
 
     const timestamp = new Date().toISOString();
@@ -815,7 +825,7 @@ class InMemoryDatabase {
 
     return {
       success: true,
-      message: `Оплата на сумму ${amount.toLocaleString('ru-RU')} PUSH прошла успешно`,
+      message: `Оплата на сумму ${amount.toLocaleString('ru-RU')} Королевских Франков прошла успешно`,
       transactionId: txId,
       remainingBalance: card.balance,
       cardNumber: card.cardNumber,
@@ -834,7 +844,7 @@ class InMemoryDatabase {
     const invoice: Invoice = {
       id,
       merchantUserId,
-      merchantName: merchantName.trim() || 'Торговец НЯСР',
+      merchantName: merchantName.trim() || 'Торговец Лаймии',
       recipientCardNumber: cleanCardNum,
       amount: Math.abs(Number(amount)),
       description: description.trim() || 'Оплата услуг / товаров',
@@ -898,7 +908,7 @@ class InMemoryDatabase {
 
     return {
       success: true,
-      message: `Счёт на ${invoice.amount.toLocaleString('ru-RU')} PUSH успешно оплачен!`,
+      message: `Счёт на ${invoice.amount.toLocaleString('ru-RU')} Королевских Франков успешно оплачен!`,
       invoice,
       remainingBalance: payerCard.balance,
     };
@@ -960,7 +970,7 @@ class InMemoryDatabase {
 
     return {
       success: true,
-      message: `Успешно переведено ${amount.toLocaleString('ru-RU')} PUSH`,
+      message: `Успешно переведено ${amount.toLocaleString('ru-RU')} Королевских Франков`,
       txId,
       balance: toCard.balance,
     };
@@ -1048,20 +1058,20 @@ class InMemoryDatabase {
       id: `tx_emit_${Date.now()}`,
       cardId: targetCard.id,
       cardNumber: targetCard.cardNumber,
-      fromCardNumber: 'EMISSION_MINFIN_NYASR',
+      fromCardNumber: 'EMISSION_MINFIN_LAIMIA',
       toCardNumber: targetCard.cardNumber,
-      senderName: 'Государственная Эмиссия (Минфин НЯСР)',
+      senderName: 'Государственная Эмиссия (Минфин Лаймии)',
       recipientName: targetCard.cardHolderName,
       amount,
       type: 'currency_emission',
-      description: `[Эмиссия Валюты] Выпущено ${amount.toLocaleString('ru-RU')} PUSH в обращение.`,
+      description: `[Эмиссия Валюты] Выпущено ${amount.toLocaleString('ru-RU')} Королевских Франков в обращение.`,
       createdAt: new Date().toISOString(),
     };
     this.transactions.set(tx.id, tx);
 
     return {
       success: true,
-      message: `Государственная эмиссия успешно проведена! Выпущено ${amount.toLocaleString('ru-RU')} PUSH на карту ${targetCard.cardNumber}`,
+      message: `Государственная эмиссия успешно проведена! Выпущено ${amount.toLocaleString('ru-RU')} Королевских Франков на карту ${targetCard.cardNumber}`,
       newBalance: targetCard.balance,
       recipientCardNumber: targetCard.cardNumber,
       transaction: tx,
@@ -1374,7 +1384,7 @@ export const dbService = {
     cardNumberRaw: string,
     cvv: string,
     amount: number,
-    merchantName: string = 'Внешний Магазин НЯСР',
+    merchantName: string = 'Внешний Магазин Лаймии',
     description: string = 'Оплата на сайте партнера'
   ): Promise<MerchantChargeResponse> {
     if (isFirebaseConfigured) {

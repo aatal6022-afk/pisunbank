@@ -101,14 +101,14 @@ export const BankCardComponent: React.FC<BankCardProps> = ({ card, onCopyCardNum
                     : 'text-zinc-500'
                 }`}
               >
-                {isTreasury ? 'КАЗНА • МИНФИН НЯСР' : 'СТРАНА ПИСЮНОВ • НЯСР'}
+                {isTreasury ? 'КАЗНА • МИНФИН ЛАЙМИИ' : 'КОРОЛЕВСТВО ЛАЙМИЯ'}
               </div>
               <div
                 className={`text-sm font-extrabold tracking-tight ${
                   isFrozen || isBlack || isTreasury ? 'text-white' : 'text-zinc-900'
                 }`}
               >
-                {isTreasury ? 'ПИСЮН БАНК • КАЗНА' : 'ПИСЮН БАНК'}
+                {isTreasury ? 'БАНК ЛАЙМИИ • КАЗНА' : 'БАНК ЛАЙМИИ'}
               </div>
             </div>
           </div>
@@ -230,7 +230,7 @@ export const BankCardComponent: React.FC<BankCardProps> = ({ card, onCopyCardNum
                 isFrozen || isBlack || isTreasury ? 'text-white' : 'text-zinc-900'
               }`}
             >
-              {card.cardHolderName || (isTreasury ? 'КАЗНА НЯСР' : 'ГРАЖДАНИН НЯСР')}
+              {card.cardHolderName || (isTreasury ? 'КАЗНА ЛАЙМИИ' : 'ГРАЖДАНИН ЛАЙМИИ')}
             </div>
           </div>
 

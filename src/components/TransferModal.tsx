@@ -138,7 +138,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
           </button>
           <div className="flex items-center space-x-2 text-zinc-900 text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-0.5 sm:mb-1">
             <Send className="w-3.5 h-3.5 text-amber-500" />
-            <span>Мгновенный перевод НЯСР</span>
+            <span>Мгновенный перевод в Королевстве Лаймия</span>
           </div>
           <h2 className="text-lg sm:text-xl font-extrabold text-zinc-900">Перевод на другую карту</h2>
           <p className="text-xs text-zinc-500 mt-0.5">
@@ -185,7 +185,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
             {/* Recipient Validation Status */}
             {checkingRecipient && (
               <p className="text-xs text-amber-600 mt-1.5 animate-pulse font-medium">
-                Проверка номера карты в реестре Банка номер один в НЯСР...
+                Проверка номера карты в реестре Банка Королевства Лаймия...
               </p>
             )}
 
@@ -205,7 +205,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
             {/* Quick Test Recipients Shortcuts */}
             <div className="mt-3">
               <div className="text-[11px] font-semibold text-slate-500 mb-1.5">
-                Быстрый выбор получателя в Стране писюнов (НЯСР):
+                Быстрый выбор получателя в Королевстве Лаймия:
               </div>
               <div className="flex flex-wrap gap-2">
                 <button
@@ -213,14 +213,14 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                   onClick={() => setShortcutCard('450000000001')}
                   className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] text-slate-800 font-medium transition-colors border border-slate-200"
                 >
-                  🏛️ Казна НЯСР
+                  🏛️ Казна Лаймии
                 </button>
                 <button
                   type="button"
                   onClick={() => setShortcutCard('450088889999')}
                   className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] text-slate-800 font-medium transition-colors border border-slate-200"
                 >
-                  👤 Иван Гражданин (НЯСР)
+                  👤 Иван Гражданин (Лаймия)
                 </button>
               </div>
             </div>
@@ -230,7 +230,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
           <div>
             <div className="flex justify-between items-center mb-1">
               <label className="block text-xs font-bold text-slate-800">
-                Сумма перевода (в писиках) <span className="text-rose-500">*</span>
+                Сумма перевода (в Королевских Франках) <span className="text-rose-500">*</span>
               </label>
               <span className="text-xs text-slate-500">
                 Доступно: <strong className="text-slate-900">{formatPisiki(card.balance)}</strong>
@@ -248,9 +248,9 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                   setError('');
                 }}
                 placeholder="1000"
-                className="w-full px-4 py-3 rounded-xl border border-slate-300 text-lg font-bold text-slate-900 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none"
+                className="w-full px-4 py-3 pr-24 rounded-xl border border-slate-300 text-lg font-bold text-slate-900 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none"
               />
-              <span className="absolute right-4 top-3 text-slate-400 font-bold">писиков</span>
+              <span className="absolute right-4 top-3.5 text-slate-400 font-bold text-sm">франков</span>
             </div>
 
             {/* Quick Amount Buttons */}

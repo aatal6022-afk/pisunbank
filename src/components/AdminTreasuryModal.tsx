@@ -203,7 +203,7 @@ export const AdminTreasuryModal: React.FC<AdminTreasuryModalProps> = ({
               <div>
                 <div className="flex items-center space-x-2">
                   <span className="text-[11px] font-black uppercase tracking-widest text-amber-400">
-                    ГОСУДАРСТВЕННАЯ КАЗНА • МИНФИН НЯСР
+                    ГОСУДАРСТВЕННАЯ КАЗНА • МИНФИН ЛАЙМИИ
                   </span>
                   <span className="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40">
                     VERIFIED ADMIN
@@ -337,7 +337,7 @@ export const AdminTreasuryModal: React.FC<AdminTreasuryModalProps> = ({
                     {formatPisiki(stats?.citizensTotalBalance || 0)}
                   </div>
                   <div className="text-[11px] text-zinc-400 mt-1">
-                    Сумма на счетах {stats?.totalCitizens || 0} граждан НЯСР
+                    Сумма на счетах {stats?.totalCitizens || 0} граждан Королевства Лаймия
                   </div>
                 </div>
 
@@ -358,14 +358,14 @@ export const AdminTreasuryModal: React.FC<AdminTreasuryModalProps> = ({
                 {/* Total Monetary Supply */}
                 <div className="bg-zinc-800/80 border border-zinc-700/80 rounded-xl p-4 shadow-sm relative overflow-hidden sm:col-span-2 lg:col-span-1">
                   <div className="flex items-center justify-between text-zinc-400 mb-2">
-                    <span className="text-xs font-semibold uppercase tracking-wider">Всего писиков в стране</span>
+                    <span className="text-xs font-semibold uppercase tracking-wider">Всего Королевских Франков в стране</span>
                     <Coins className="w-4 h-4 text-amber-400" />
                   </div>
                   <div className="text-2xl font-black text-emerald-400 font-mono">
                     {formatPisiki(stats?.totalMonetarySupply || 0)}
                   </div>
                   <div className="text-[11px] text-zinc-400 mt-1">
-                    Полная денежная масса Страны писюнов (НЯСР)
+                    Полная денежная масса Королевства Лаймия
                   </div>
                 </div>
 
@@ -406,7 +406,7 @@ export const AdminTreasuryModal: React.FC<AdminTreasuryModalProps> = ({
                     Требуется выпустить дополнительную валюту?
                   </h4>
                   <p className="text-xs text-zinc-300">
-                    Вы можете мгновенно напечатать писики в Казну или направить субсидию гражданину.
+                    Вы можете мгновенно напечатать Королевские Франки в Казну или направить субсидию гражданину.
                   </p>
                 </div>
                 <button
@@ -425,9 +425,9 @@ export const AdminTreasuryModal: React.FC<AdminTreasuryModalProps> = ({
               <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-xs text-amber-200">
                 <div className="font-bold flex items-center gap-1.5 mb-1">
                   <ShieldCheck className="w-4 h-4 text-amber-400" />
-                  Государственное полномочие эмиссии НЯСР
+                  Государственное полномочие эмиссии Королевства Лаймия
                 </div>
-                В соответствии с Конституцией Страны писюнов (НЯСР), Администратор обладает исключительным правом выпуска национальной валюты (писики). Все эмиссии фиксируются в открытом реестре транзакций.
+                В соответствии с Конституцией Королевства Лаймия, Администратор обладает исключительным правом выпуска национальной валюты (Королевский Франк). Все эмиссии фиксируются в открытом реестре транзакций.
               </div>
 
               <form onSubmit={handleEmitCurrency} className="space-y-5">
@@ -436,7 +436,7 @@ export const AdminTreasuryModal: React.FC<AdminTreasuryModalProps> = ({
                   {/* Amount */}
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold uppercase tracking-wider text-zinc-300">
-                      Сумма выпуска (в писиках) <span className="text-amber-400">*</span>
+                      Сумма выпуска (в Королевских Франках) <span className="text-amber-400">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -447,9 +447,9 @@ export const AdminTreasuryModal: React.FC<AdminTreasuryModalProps> = ({
                         value={emitAmount}
                         onChange={(e) => setEmitAmount(e.target.value)}
                         placeholder="Например, 1000000"
-                        className="w-full px-3.5 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-white font-mono font-bold focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm"
+                        className="w-full pl-3.5 pr-20 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-white font-mono font-bold focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm"
                       />
-                      <span className="absolute right-3.5 top-2.5 text-xs text-amber-400 font-bold">писиков</span>
+                      <span className="absolute right-3.5 top-2.5 text-xs text-amber-400 font-bold">франков</span>
                     </div>
                   </div>
 
@@ -755,7 +755,7 @@ export const AdminTreasuryModal: React.FC<AdminTreasuryModalProps> = ({
         <div className="p-4 bg-zinc-950 border-t border-zinc-800 text-center text-xs text-zinc-400 flex items-center justify-between">
           <span className="flex items-center gap-1.5 text-amber-400/90 font-semibold">
             <Landmark className="w-3.5 h-3.5" />
-            Экономическая система Страны писюнов (НЯСР)
+            Экономическая система Королевства Лаймия
           </span>
           <button
             onClick={onClose}

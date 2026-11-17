@@ -57,15 +57,15 @@ export const LawsModal: React.FC<LawsModalProps> = ({
             </div>
             <div>
               <div className="text-[11px] uppercase tracking-wider text-amber-200 font-extrabold flex items-center gap-1.5">
-                <span>Законодательство Страны писюнов (НЯСР)</span>
+                <span>Законодательство Королевства Лаймия</span>
                 <span className="w-1 h-1 rounded-full bg-amber-300"></span>
-                <span>Писюн Банк</span>
+                <span>Банк Королевства Лаймия</span>
               </div>
               <h2 className="text-xl font-black text-white">Законы & Указы Государства</h2>
             </div>
           </div>
           <p className="text-xs text-amber-100/90 leading-relaxed">
-            Официальные нормы экономической политики: Налог на бездействие валюты МУР и Указ №2 о заморозке счетов.
+            Официальные нормы экономической политики: Налог на бездействие валюты Королевский Франк и Указ №2 о заморозке счетов.
           </p>
         </div>
 
@@ -106,7 +106,7 @@ export const LawsModal: React.FC<LawsModalProps> = ({
                   Закон о налоговой ответственности средств
                 </h3>
                 <p className="text-xs text-amber-800 leading-relaxed">
-                  В соответствии с экономической политикой Страны писюнов (НЯСР), Писюн Банк вводит налог на бездействие валюты (PUSH).
+                  В соответствии с экономической политикой Королевства Лаймия, Банк Королевства Лаймия вводит налог на бездействие валюты (Королевский Франк).
                 </p>
               </div>
 
@@ -117,7 +117,7 @@ export const LawsModal: React.FC<LawsModalProps> = ({
                     <span>Что это значит?</span>
                   </div>
                   <p className="text-xs text-zinc-600 leading-relaxed pl-6">
-                    Если в течение <strong>7 (семи) календарных дней</strong> ваши средства на счете остаются нетронутыми (не было ни трат, ни пополнений, ни переводов), то Писюн Банк автоматически списывает <strong>7% от суммы</strong> в пользу Казны Страны писюнов (НЯСР).
+                    Если в течение <strong>7 (семи) календарных дней</strong> ваши средства на счете остаются нетронутыми (не было ни трат, ни пополнений, ни переводов), то Банк Королевства Лаймия автоматически списывает <strong>7% от суммы</strong> в пользу Казны Королевства Лаймия.
                   </p>
                 </div>
 
@@ -127,7 +127,7 @@ export const LawsModal: React.FC<LawsModalProps> = ({
                     <span>Зачем это нужно?</span>
                   </div>
                   <p className="text-xs text-zinc-600 leading-relaxed pl-6">
-                    Чтобы деньги работали, экономика двигалась, а Страна писюнов (НЯСР) процветала! Не держите сбережения «мертвым грузом».
+                    Чтобы деньги работали, экономика двигалась, а Королевство Лаймия процветало! Не держите сбережения «мертвым грузом».
                   </p>
                 </div>
 
@@ -185,7 +185,7 @@ export const LawsModal: React.FC<LawsModalProps> = ({
               <div className="p-4 rounded-2xl bg-sky-50/80 border border-sky-200">
                 <h3 className="text-sm font-extrabold text-sky-950 mb-1 flex items-center gap-2">
                   <Snowflake className="w-4 h-4 text-sky-600" />
-                  ❄️ УКАЗ НЯСР №2: О ЗАМОРОЗКЕ СЧЕТОВ В БАНКЕ НОМЕР ОДИН В НЯСР
+                  ❄️ УКАЗ КОРОЛЕВСТВА ЛАЙМИЯ №2: О ЗАМОРОЗКЕ СЧЕТОВ В БАНКЕ КОРОЛЕВСТВА ЛАЙМИЯ
                 </h3>
                 <p className="text-xs text-sky-800 leading-relaxed">
                   Официальное положение о временной консервации банковских активов граждан и юридических лиц.

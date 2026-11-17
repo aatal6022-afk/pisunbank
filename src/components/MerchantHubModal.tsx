@@ -50,7 +50,7 @@ export const MerchantHubModal: React.FC<MerchantHubModalProps> = ({
 
   // Invoicing Form State
   const [merchantName, setMerchantName] = useState<string>(
-    activeCard?.cardHolderName ? `Магазин «${activeCard.cardHolderName}»` : 'Торговая Лавка НЯСР'
+    activeCard?.cardHolderName ? `Магазин «${activeCard.cardHolderName}»` : 'Торговая Лавка Лаймии'
   );
   const [invoiceAmount, setInvoiceAmount] = useState<string>('5000');
   const [invoiceDesc, setInvoiceDesc] = useState<string>('Счёт за товары / услуги №102');
@@ -60,7 +60,7 @@ export const MerchantHubModal: React.FC<MerchantHubModalProps> = ({
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
 
   // Widget Generator State
-  const [widgetBtnText, setWidgetBtnText] = useState<string>('Оплатить через Писюн Банк');
+  const [widgetBtnText, setWidgetBtnText] = useState<string>('Оплатить через Банк Лаймии');
   const [widgetColor, setWidgetColor] = useState<'black' | 'gold' | 'emerald' | 'white'>('black');
   const [widgetRadius, setWidgetRadius] = useState<'rounded-lg' | 'rounded-xl' | 'rounded-2xl' | 'rounded-full'>('rounded-2xl');
   const [widgetAmount, setWidgetAmount] = useState<string>('2500');
@@ -196,7 +196,7 @@ export const MerchantHubModal: React.FC<MerchantHubModalProps> = ({
           </div>
 
           <h2 className="text-xl sm:text-3xl font-black text-white flex items-center space-x-2">
-            <span>Торговый Эквайринг Банка номер один в НЯСР</span>
+            <span>Торговый Эквайринг Банка Королевства Лаймия</span>
           </h2>
           <p className="text-xs sm:text-sm text-zinc-400 mt-1 hidden xs:block">
             Счета на оплату, виджеты для сайтов и аналитика выручки для бизнеса
@@ -255,7 +255,7 @@ export const MerchantHubModal: React.FC<MerchantHubModalProps> = ({
           >
             {userCards.map((card) => (
               <option key={card.id} value={card.cardNumber}>
-                {card.cardType === 'business' ? '⚫ ЧЕРНАЯ' : '⚪ БЕЛАЯ'} ({card.cardNumber}) — Баланс: {card.balance.toLocaleString('ru-RU')} PUSH
+                {card.cardType === 'business' ? '⚫ ЧЕРНАЯ' : '⚪ БЕЛАЯ'} ({card.cardNumber}) — Баланс: {formatPisiki(card.balance)}
               </option>
             ))}
           </select>
@@ -301,7 +301,7 @@ export const MerchantHubModal: React.FC<MerchantHubModalProps> = ({
 
                 <div>
                   <label className="block text-xs font-bold text-zinc-800 mb-1">
-                    Сумма счёта (PUSH)
+                    Сумма счёта (в Королевских Франках)
                   </label>
                   <input
                     type="number"
@@ -361,7 +361,7 @@ export const MerchantHubModal: React.FC<MerchantHubModalProps> = ({
                       <div className="p-4 rounded-xl bg-white border border-zinc-200 space-y-2">
                         <div className="text-xs text-zinc-500 font-bold uppercase">Детали счёта</div>
                         <div className="text-xl font-black text-zinc-900">
-                          {createdInvoice.amount.toLocaleString('ru-RU')} PUSH
+                          {formatPisiki(createdInvoice.amount)}
                         </div>
                         <div className="text-xs font-bold text-zinc-800">
                           Продавец: {createdInvoice.merchantName}
@@ -424,7 +424,7 @@ export const MerchantHubModal: React.FC<MerchantHubModalProps> = ({
                 </div>
 
                 <div className="p-3 rounded-xl bg-amber-50 border border-amber-200/80 text-[11px] text-amber-900 leading-tight">
-                  💡 <strong>Подсказка:</strong> Отправив эту ссылку покупателю, он сможет внести деньги со своей карты Банка номер один в НЯСР за 5 секунд.
+                  💡 <strong>Подсказка:</strong> Отправив эту ссылку покупателю, он сможет внести деньги со своей карты Банка Королевства Лаймия за 5 секунд.
                 </div>
               </div>
             </div>
@@ -438,7 +438,7 @@ export const MerchantHubModal: React.FC<MerchantHubModalProps> = ({
                 <div>
                   <h3 className="text-base font-extrabold text-zinc-900 flex items-center space-x-2">
                     <Code className="w-5 h-5 text-amber-500" />
-                    <span>Конструктор виджета «Оплатить через Писюн Банк»</span>
+                    <span>Конструктор виджета «Оплатить через Банк Лаймии»</span>
                   </h3>
                   <p className="text-xs text-zinc-500 mt-0.5">
                     Настройте вид кнопки и скопируйте готовый HTML/JS код для любого сайта
@@ -453,7 +453,7 @@ export const MerchantHubModal: React.FC<MerchantHubModalProps> = ({
                     type="text"
                     value={widgetMerchantName}
                     onChange={(e) => setWidgetMerchantName(e.target.value)}
-                    placeholder="Маркетплейс НЯСР"
+                    placeholder="Маркетплейс Лаймии"
                     className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs font-semibold text-zinc-900 focus:ring-2 focus:ring-amber-500 outline-none"
                   />
                 </div>
@@ -467,14 +467,14 @@ export const MerchantHubModal: React.FC<MerchantHubModalProps> = ({
                       type="text"
                       value={widgetBtnText}
                       onChange={(e) => setWidgetBtnText(e.target.value)}
-                      placeholder="Купить за PUSH"
+                      placeholder="Купить за Королевский Франк"
                       className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs font-semibold text-zinc-900 focus:ring-2 focus:ring-amber-500 outline-none"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-zinc-800 mb-1">
-                      Сумма товара (PUSH)
+                      Сумма товара (Королевский Франк)
                     </label>
                     <input
                       type="number"
@@ -564,7 +564,7 @@ export const MerchantHubModal: React.FC<MerchantHubModalProps> = ({
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
-                              merchantName: widgetMerchantName || 'Магазин НЯСР',
+                              merchantName: widgetMerchantName || 'Магазин Лаймии',
                               recipientCardNumber: selectedCardNumber,
                               amount: Number(widgetAmount || 1000),
                               description: `Оплата виджетом с внешнего сайта`,
@@ -589,7 +589,7 @@ export const MerchantHubModal: React.FC<MerchantHubModalProps> = ({
                       }`}
                     >
                       <ShoppingBag className="w-4 h-4" />
-                      <span>{widgetBtnText} ({Number(widgetAmount || 0).toLocaleString('ru-RU')} PUSH)</span>
+                      <span>{widgetBtnText} ({formatPisiki(Number(widgetAmount || 0))})</span>
                     </button>
 
                     <p className="text-[10px] text-amber-400/90 font-medium pt-1">
@@ -629,10 +629,10 @@ export const MerchantHubModal: React.FC<MerchantHubModalProps> = ({
                 <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200">
                   <div className="text-xs font-bold text-amber-800 flex items-center space-x-1">
                     <TrendingUp className="w-4 h-4 text-amber-600" />
-                    <span>Выручка (PUSH)</span>
+                    <span>Выручка</span>
                   </div>
                   <div className="text-2xl font-black text-amber-950 mt-1">
-                    {stats.totalRevenue.toLocaleString('ru-RU')}
+                    {formatPisiki(stats.totalRevenue)}
                   </div>
                   <div className="text-[10px] text-amber-700 mt-0.5">За всё время</div>
                 </div>
@@ -654,7 +654,7 @@ export const MerchantHubModal: React.FC<MerchantHubModalProps> = ({
                     <span>Средний чек</span>
                   </div>
                   <div className="text-2xl font-black text-zinc-900 mt-1">
-                    {stats.avgCheck.toLocaleString('ru-RU')} PUSH
+                    {formatPisiki(stats.avgCheck)}
                   </div>
                   <div className="text-[10px] text-zinc-500 mt-0.5">На 1 покупку</div>
                 </div>
@@ -725,7 +725,7 @@ export const MerchantHubModal: React.FC<MerchantHubModalProps> = ({
 
                         <div className="text-right">
                           <div className="text-base font-black text-zinc-900">
-                            +{inv.amount.toLocaleString('ru-RU')} PUSH
+                            +{formatPisiki(inv.amount)}
                           </div>
                           {inv.status === 'pending' && (
                             <button

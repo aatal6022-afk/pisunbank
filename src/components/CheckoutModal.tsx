@@ -72,7 +72,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const handlePay = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!cardNumber || cardNumber.replace(/\s+/g, '').length !== 12) {
-      setError('Введите корректный 12-значный номер карты Банка номер один в НЯСР');
+      setError('Введите корректный 12-значный номер карты Банка Королевства Лаймия');
       return;
     }
     if (!cvv || cvv.trim().length !== 3) {
@@ -129,7 +129,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
           <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-bold mb-3">
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Страна писюнов (НЯСР) • Безопасный эквайринг</span>
+            <span>Королевство Лаймия • Безопасный эквайринг</span>
           </div>
 
           <h2 className="text-2xl font-black text-white flex items-center space-x-2">
@@ -137,7 +137,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <span>Оплата счёта №{invoiceId.slice(-6).toUpperCase()}</span>
           </h2>
           <p className="text-xs text-zinc-400 mt-1">
-            Шлюз моментальных платежей Банка номер один в НЯСР
+            Шлюз моментальных платежей Банка Королевства Лаймия
           </p>
         </div>
 
@@ -235,7 +235,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   {/* Card Number */}
                   <div>
                     <label className="block text-xs font-bold text-zinc-800 mb-1">
-                      Номер карты Банка номер один в НЯСР
+                      Номер карты Банка Королевства Лаймия
                     </label>
                     <div className="relative">
                       <CreditCard className="w-5 h-5 text-zinc-400 absolute left-3.5 top-3.5" />
@@ -290,7 +290,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
                   <p className="text-[11px] text-zinc-400 text-center font-medium flex items-center justify-center space-x-1">
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                    <span>256-bit Шифрование Банка номер один в НЯСР</span>
+                    <span>256-bit Шифрование Банка Королевства Лаймия</span>
                   </p>
                 </form>
               )}

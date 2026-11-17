@@ -24,7 +24,7 @@ export const ApiDocsModal: React.FC<ApiDocsModalProps> = ({
   const [testFromCvv, setTestFromCvv] = useState(userCvv || '123');
   const [testToCardNumber, setTestToCardNumber] = useState('450011112222');
   const [testAmount, setTestAmount] = useState('1500');
-  const [testMerchant, setTestMerchant] = useState('НЯСР Выплата');
+  const [testMerchant, setTestMerchant] = useState('Лаймия Выплата');
   const [testDescription, setTestDescription] = useState('Перевод с карты на карту по API');
   const [testResponse, setTestResponse] = useState<any>(null);
   const [testLoading, setTestLoading] = useState(false);
@@ -79,8 +79,8 @@ export const ApiDocsModal: React.FC<ApiDocsModalProps> = ({
     }
   };
 
-  const chargeJsSnippet = `// Подключение списания оплаты Банка номер один в НЯСР на вашем сайте
-async function payWithNyasrBank(cardNumber, cvv, amount, orderDetails) {
+  const chargeJsSnippet = `// Подключение списания оплаты Банка Королевства Лаймия на вашем сайте
+async function payWithLaimiaBank(cardNumber, cvv, amount, orderDetails) {
   try {
     const response = await fetch('${appUrl}/api/v1/payment/charge', {
       method: 'POST',
@@ -90,7 +90,7 @@ async function payWithNyasrBank(cardNumber, cvv, amount, orderDetails) {
       body: JSON.stringify({
         cardNumber: cardNumber.replace(/\\s+/g, ''), // 12-значный номер карты
         cvv: cvv,                                   // 3-значный CVV код
-        amount: amount,                             // Сумма списания в PUSH
+        amount: amount,                             // Сумма списания (Королевский Франк)
         merchantName: "Ваш Магазин",                 // Название вашего сайта/магазина
         description: orderDetails || "Оплата заказа",
       }),
@@ -104,7 +104,7 @@ async function payWithNyasrBank(cardNumber, cvv, amount, orderDetails) {
       alert("Ошибка оплаты: " + result.message);
     }
   } catch (error) {
-    console.error("Ошибка соединения с API Банка номер один в НЯСР:", error);
+    console.error("Ошибка соединения с API Банка Королевства Лаймия:", error);
   }
 }`;
 
@@ -114,11 +114,11 @@ async function payWithNyasrBank(cardNumber, cvv, amount, orderDetails) {
     "cardNumber": "450088889999",
     "cvv": "123",
     "amount": 1500,
-    "merchantName": "Магазин НЯСР",
+    "merchantName": "Магазин Лаймии",
     "description": "Покупка товара на сайте"
   }'`;
 
-  const depositJsSnippet = `// Перевод денег с карты списания на карту зачисления по API Банка номер один в НЯСР
+  const depositJsSnippet = `// Перевод денег с карты списания на карту зачисления по API Банка Королевства Лаймия
 async function transferBetweenCards(fromCardNumber, fromCvv, toCardNumber, amount, note) {
   try {
     const response = await fetch('${appUrl}/api/v1/card/deposit', {
@@ -130,20 +130,20 @@ async function transferBetweenCards(fromCardNumber, fromCvv, toCardNumber, amoun
         fromCardNumber: fromCardNumber.replace(/\\s+/g, ''), // Карта списания
         fromCvv: fromCvv.trim(),                             // CVV карты списания
         toCardNumber: toCardNumber.replace(/\\s+/g, ''),     // Карта зачисления
-        amount: amount,                                       // Сумма в PUSH
+        amount: amount,                                       // Сумма в Королевских Франках
         description: note || "Перевод по API между картами",  // Описание
       }),
     });
 
     const result = await response.json();
     if (result.success) {
-      alert("Перевод успешно выполнен! Остаток карты списания: " + result.senderRemainingBalance + " PUSH");
+      alert("Перевод успешно выполнен! Остаток карты списания: " + result.senderRemainingBalance + " Королевских Франков");
       console.log("ID транзакции:", result.transactionId);
     } else {
       alert("Ошибка перевода: " + result.message);
     }
   } catch (error) {
-    console.error("Ошибка соединения с API Банка номер один в НЯСР:", error);
+    console.error("Ошибка соединения с API Банка Королевства Лаймия:", error);
   }
 }`;
 
@@ -167,7 +167,7 @@ async function transferBetweenCards(fromCardNumber, fromCvv, toCardNumber, amoun
    target="_blank"
    style="background: #f59e0b; color: #000000; font-weight: 800; padding: 14px 28px; border-radius: 16px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-family: sans-serif; border: none; cursor: pointer;">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-  <span>Оплатить через Писюн Банк (2 500 PUSH)</span>
+  <span>Оплатить через Банк Лаймии (2 500 Королевских Франков)</span>
 </a>`;
 
   return (
@@ -181,9 +181,9 @@ async function transferBetweenCards(fromCardNumber, fromCvv, toCardNumber, amoun
             </div>
             <div>
               <div className="text-xs text-amber-400 font-bold uppercase tracking-widest">
-                СТРАНА ПИСЮНОВ (НЯСР) • ПОРТАЛ РАЗРАБОТЧИКА
+                КОРОЛЕВСТВО ЛАЙМИЯ • ПОРТАЛ РАЗРАБОТЧИКА
               </div>
-              <h2 className="text-xl font-black text-white">Писюн Банк Acquiring Payment REST API</h2>
+              <h2 className="text-xl font-black text-white">Банк Королевства Лаймия Acquiring Payment REST API</h2>
             </div>
           </div>
 
@@ -314,11 +314,11 @@ async function transferBetweenCards(fromCardNumber, fromCvv, toCardNumber, amoun
                   <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-200 text-xs leading-relaxed">
                     <div className="font-bold text-amber-400 text-sm mb-1 flex items-center space-x-1.5">
                       <ShieldCheck className="w-4 h-4" />
-                      <span>Зачисление средств на карту Банка номер один в НЯСР по номеру:</span>
+                      <span>Зачисление средств на карту Банка Королевства Лаймия по номеру:</span>
                     </div>
                     Используйте этот API эндпоинт для автозачислений, выплат наград, бонусов или пополнения баланса.
                     Отправьте `POST` запрос с номером карты получателя (`cardNumber`) и суммой (`amount`).
-                    Баланс мгновенно пополнится в базе Банка номер один в НЯСР!
+                    Баланс мгновенно пополнится в базе Банка Королевства Лаймия!
                   </div>
 
                   {/* Endpoint Deposit Specification */}
@@ -456,7 +456,7 @@ async function transferBetweenCards(fromCardNumber, fromCvv, toCardNumber, amoun
                   type="button"
                   onClick={() => {
                     setTestMode('charge');
-                    setTestMerchant('Магазин НЯСР Онлайн');
+                    setTestMerchant('Магазин Лаймии Онлайн');
                     setTestDescription('Оплата заказа #704');
                   }}
                   className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
@@ -531,7 +531,7 @@ async function transferBetweenCards(fromCardNumber, fromCvv, toCardNumber, amoun
 
                 <div>
                   <label className="block text-xs font-bold text-zinc-300 mb-1">
-                    Сумма перевода (PUSH)
+                    Сумма перевода (Королевский Франк)
                   </label>
                   <input
                     type="number"
@@ -563,7 +563,7 @@ async function transferBetweenCards(fromCardNumber, fromCvv, toCardNumber, amoun
                     <Play className="w-4 h-4 fill-current" />
                     <span>
                       {testLoading
-                        ? 'Запрос к API Банка номер один в НЯСР...'
+                        ? 'Запрос к API Банка Королевства Лаймия...'
                         : testMode === 'deposit'
                         ? 'Выполнить Перевод через API'
                         : 'Выполнить Списание через API'}
@@ -576,7 +576,7 @@ async function transferBetweenCards(fromCardNumber, fromCvv, toCardNumber, amoun
               {testResponse && (
                 <div className="space-y-2">
                   <div className="flex justify-between items-center text-xs font-bold">
-                    <span className="text-zinc-400">Ответ сервера Банка номер один в НЯСР API:</span>
+                    <span className="text-zinc-400">Ответ сервера Банка Королевства Лаймия API:</span>
                     <span
                       className={
                         testResponse.status === 200

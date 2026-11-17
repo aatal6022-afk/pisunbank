@@ -142,7 +142,7 @@ export const ExpressCheckoutModal: React.FC<ExpressCheckoutModalProps> = ({
 
           <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-bold mb-3">
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Писюн Банк Pay • Быстрый эквайринг</span>
+            <span>Банк Лаймии Pay • Быстрый эквайринг</span>
           </div>
 
           <h2 className="text-2xl font-black text-white flex items-center space-x-2">
@@ -290,7 +290,7 @@ export const ExpressCheckoutModal: React.FC<ExpressCheckoutModalProps> = ({
                 /* Not Logged in state */
                 <div className="space-y-4">
                   <div className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-400 flex items-center justify-between">
-                    <span>У вас есть аккаунт в Банке номер один в НЯСР?</span>
+                    <span>У вас есть аккаунт в Банке Королевства Лаймия?</span>
                     {onOpenLogin && (
                       <button
                         type="button"
@@ -362,7 +362,7 @@ export const ExpressCheckoutModal: React.FC<ExpressCheckoutModalProps> = ({
 
               <p className="text-[11px] text-zinc-500 text-center flex items-center justify-center space-x-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Защищено шифрованием Банка номер один в НЯСР</span>
+                <span>Защищено шифрованием Банка Королевства Лаймия</span>
               </p>
             </form>
           )}
