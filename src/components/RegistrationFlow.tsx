@@ -11,7 +11,6 @@ import {
   CheckCircle2,
   AlertCircle,
   Database,
-  Crown,
   LogIn,
   UserPlus,
 } from 'lucide-react';
@@ -178,35 +177,6 @@ export const RegistrationFlow: React.FC<RegistrationFlowProps> = ({
     }
   };
 
-  // Handle Quick Demo Login
-  const handleQuickDemoLogin = async (username: string, password: string) => {
-    setLoginIdentifier(username);
-    setLoginPassword(password);
-    setError(null);
-    setLoading(true);
-
-    try {
-      const res = await fetch('/api/cards/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-      const data = await res.json().catch(() => ({}));
-
-      if (data.success && data.user) {
-        const primaryCard = data.card || (data.cards && data.cards[0]);
-        onRegisterSuccess(data.user, primaryCard);
-        if (onClose) onClose();
-      } else {
-        setError(data.message || 'Не удалось выполнить демо-вход');
-      }
-    } catch (err: any) {
-      setError(err.message || 'Ошибка демо-входа');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Handle Google OAuth Login
   const handleGoogleLogin = async () => {
     setLoading(true);
@@ -333,7 +303,7 @@ export const RegistrationFlow: React.FC<RegistrationFlowProps> = ({
                     required
                     value={loginIdentifier}
                     onChange={(e) => setLoginIdentifier(e.target.value)}
-                    placeholder="Например: ИВАН ЛАЙМИЯ или 450088889999"
+                    placeholder="Например: ALEX_LAIMIA или 450012345678"
                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-300 focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10 text-sm font-medium transition-all outline-none"
                   />
                 </div>
@@ -376,40 +346,6 @@ export const RegistrationFlow: React.FC<RegistrationFlowProps> = ({
                 <span>{loading ? 'Проверка реквизитов...' : 'Войти в личный кабинет'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
-
-              {/* Quick Demo Logins Helper */}
-              <div className="pt-2">
-                <div className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-2 text-center">
-                  Быстрый демо-вход для теста
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    disabled={loading}
-                    onClick={() => handleQuickDemoLogin('450000000001', 'admin')}
-                    className="p-2.5 rounded-xl border border-amber-300/80 bg-amber-50/70 hover:bg-amber-100 text-left transition-all cursor-pointer group"
-                  >
-                    <div className="flex items-center space-x-1.5 text-xs font-black text-amber-950">
-                      <Crown className="w-3.5 h-3.5 text-amber-600" />
-                      <span>Казна (Админ)</span>
-                    </div>
-                    <div className="text-[10px] text-amber-800 mt-0.5">Логин: КАЗНА ЛАЙМИИ</div>
-                  </button>
-
-                  <button
-                    type="button"
-                    disabled={loading}
-                    onClick={() => handleQuickDemoLogin('450088889999', '123')}
-                    className="p-2.5 rounded-xl border border-zinc-200 bg-zinc-50 hover:bg-zinc-100 text-left transition-all cursor-pointer group"
-                  >
-                    <div className="flex items-center space-x-1.5 text-xs font-black text-zinc-900">
-                      <CreditCard className="w-3.5 h-3.5 text-zinc-600" />
-                      <span>Иван Гражданин</span>
-                    </div>
-                    <div className="text-[10px] text-zinc-500 mt-0.5">75 000 Королевских Франков</div>
-                  </button>
-                </div>
-              </div>
             </form>
           )}
 

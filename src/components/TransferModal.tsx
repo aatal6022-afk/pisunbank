@@ -202,10 +202,10 @@ export const TransferModal: React.FC<TransferModalProps> = ({
               </div>
             )}
 
-            {/* Quick Test Recipients Shortcuts */}
+            {/* Official Recipients Shortcut */}
             <div className="mt-3">
               <div className="text-[11px] font-semibold text-slate-500 mb-1.5">
-                Быстрый выбор получателя в Королевстве Лаймия:
+                Официальные реквизиты Королевства Лаймия:
               </div>
               <div className="flex flex-wrap gap-2">
                 <button
@@ -214,13 +214,6 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                   className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] text-slate-800 font-medium transition-colors border border-slate-200"
                 >
                   🏛️ Казна Лаймии
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShortcutCard('450088889999')}
-                  className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] text-slate-800 font-medium transition-colors border border-slate-200"
-                >
-                  👤 Иван Гражданин (Лаймия)
                 </button>
               </div>
             </div>

@@ -5,7 +5,6 @@ import {
   Clock,
   ShieldCheck,
   Scale,
-  Sparkles,
   Info,
   Calendar,
   Lock,
@@ -19,19 +18,15 @@ interface InactivityStatusWidgetProps {
   card: BankCard;
   onOpenFreezeModal: () => void;
   onOpenLawsModal: () => void;
-  onCardUpdated: (card: BankCard) => void;
 }
 
 export const InactivityStatusWidget: React.FC<InactivityStatusWidgetProps> = ({
   card,
   onOpenFreezeModal,
   onOpenLawsModal,
-  onCardUpdated,
 }) => {
   const [taxStatus, setTaxStatus] = useState<InactivityTaxStatus | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [simulating, setSimulating] = useState<boolean>(false);
-  const [simMsg, setSimMsg] = useState<string | null>(null);
 
   const fetchTaxStatus = async () => {
     try {
@@ -48,31 +43,6 @@ export const InactivityStatusWidget: React.FC<InactivityStatusWidgetProps> = ({
   useEffect(() => {
     fetchTaxStatus();
   }, [card.id, card.balance, card.lastActivityDate, card.isFrozen, card.status]);
-
-  const handleSimulateInactivity = async () => {
-    setSimulating(true);
-    setSimMsg(null);
-    try {
-      const res = await fetch('/api/cards/simulate-inactivity', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cardId: card.id, days: 7 }),
-      });
-      const data = await res.json();
-      if (data.success && data.updatedCard) {
-        onCardUpdated(data.updatedCard);
-        setSimMsg(data.message);
-        fetchTaxStatus();
-      } else {
-        setSimMsg(data.message || 'Ошибка симуляции');
-      }
-    } catch (err: any) {
-      setSimMsg(err.message);
-    } finally {
-      setSimulating(false);
-      setTimeout(() => setSimMsg(null), 6000);
-    }
-  };
 
   const isFrozen = card.isFrozen || card.status === 'frozen';
   const daysInactive = taxStatus?.daysInactive ?? 0;
@@ -133,19 +103,6 @@ export const InactivityStatusWidget: React.FC<InactivityStatusWidgetProps> = ({
 
   return (
     <div className="rounded-3xl p-5 bg-white border border-zinc-200/90 shadow-sm space-y-4">
-      {/* Simulation toast if active */}
-      {simMsg && (
-        <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-semibold flex items-center justify-between animate-fade-in">
-          <div className="flex items-center space-x-2">
-            <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
-            <span>{simMsg}</span>
-          </div>
-          <button onClick={() => setSimMsg(null)} className="text-amber-700 hover:text-amber-900">
-            ✕
-          </button>
-        </div>
-      )}
-
       {/* Main Header & Status */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center space-x-3">
@@ -202,16 +159,6 @@ export const InactivityStatusWidget: React.FC<InactivityStatusWidgetProps> = ({
           >
             <Scale className="w-3.5 h-3.5 text-zinc-600" />
             <span>Закон & Правила</span>
-          </button>
-
-          <button
-            onClick={handleSimulateInactivity}
-            disabled={simulating}
-            className="py-2 px-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1"
-            title="Тест закона: смоделировать 7 дней неактивности"
-          >
-            <Sparkles className="w-3 h-3 text-amber-600" />
-            <span>{simulating ? 'Тест...' : 'Тест 7 дней'}</span>
           </button>
         </div>
       </div>

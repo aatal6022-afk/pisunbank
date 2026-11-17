@@ -10,7 +10,6 @@ import {
   AlertCircle,
   HelpCircle,
   X,
-  Play,
   CheckCircle,
 } from 'lucide-react';
 import { BankCard } from '../types';
@@ -20,7 +19,6 @@ interface LawsModalProps {
   onClose: () => void;
   card?: BankCard;
   onOpenFreezeModal: () => void;
-  onSimulateInactivity?: () => void;
 }
 
 export const LawsModal: React.FC<LawsModalProps> = ({
@@ -28,7 +26,6 @@ export const LawsModal: React.FC<LawsModalProps> = ({
   onClose,
   card,
   onOpenFreezeModal,
-  onSimulateInactivity,
 }) => {
   const [activeTab, setActiveTab] = useState<'tax' | 'freeze'>('tax');
 
@@ -165,19 +162,6 @@ export const LawsModal: React.FC<LawsModalProps> = ({
                   <Snowflake className="w-4 h-4" />
                   <span>Заморозить счет (Защита от налога)</span>
                 </button>
-
-                {onSimulateInactivity && (
-                  <button
-                    onClick={() => {
-                      onSimulateInactivity();
-                    }}
-                    className="py-3 px-4 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
-                    title="Симулировать 7 дней отсутствия активности для проверки списания налога"
-                  >
-                    <Play className="w-3.5 h-3.5 fill-current" />
-                    <span>Симулировать 7 дней (Тест закона)</span>
-                  </button>
-                )}
               </div>
             </div>
           ) : (

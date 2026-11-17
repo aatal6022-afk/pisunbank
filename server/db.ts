@@ -65,19 +65,6 @@ class InMemoryDatabase {
       isEmployee: true,
     };
 
-    const ivanUser: User = {
-      id: 'usr_ivan',
-      email: 'ivan.laimia@gmail.com',
-      password: '123',
-      googleId: 'google_ivan_demo',
-      name: 'Иван Гражданин',
-      gameNickname: 'ИВАН ЛАЙМИЯ',
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80',
-      createdAt: new Date().toISOString(),
-      isAdmin: false,
-      isEmployee: false,
-    };
-
     const govtCard: BankCard = {
       id: 'crd_treasury',
       userId: 'usr_govt',
@@ -93,40 +80,9 @@ class InMemoryDatabase {
       lastActivityDate: new Date().toISOString(),
     };
 
-    const ivanCard: BankCard = {
-      id: 'crd_ivan',
-      userId: 'usr_ivan',
-      cardNumber: '450088889999',
-      cardHolderName: 'ИВАН ЛАЙМИЯ',
-      cardType: 'regular',
-      color: 'white',
-      balance: 75000,
-      issueDate: '03/26',
-      cvv: '123',
-      status: 'active',
-      createdAt: new Date().toISOString(),
-      lastActivityDate: new Date().toISOString(),
-    };
-
-    const initTx: Transaction = {
-      id: 'tx_init_1',
-      cardId: 'crd_ivan',
-      cardNumber: '450088889999',
-      fromCardNumber: '450000000001',
-      toCardNumber: '450088889999',
-      senderName: 'Казна Королевства Лаймия',
-      recipientName: 'Иван Гражданин',
-      amount: 75000,
-      type: 'transfer_in',
-      description: 'Подъемные субсидии от Минфина Королевства Лаймия',
-      createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
-    };
-
     this.users.set(govtUser.id, govtUser);
-    this.users.set(ivanUser.id, ivanUser);
+    this.users.set(legacyGovtUser.id, legacyGovtUser);
     this.cards.set(govtCard.id, govtCard);
-    this.cards.set(ivanCard.id, ivanCard);
-    this.transactions.set(initTx.id, initTx);
   }
 
   private generate12DigitCardNumber(): string {
@@ -163,10 +119,6 @@ class InMemoryDatabase {
     if (clean === 'КАЗНА ЛАЙМИИ' || clean === 'КАЗНА НЯСР') {
       aliases.add('КАЗНА ЛАЙМИИ');
       aliases.add('КАЗНА НЯСР');
-    }
-    if (clean === 'ИВАН ЛАЙМИЯ' || clean === 'ИВАН НЯСР') {
-      aliases.add('ИВАН ЛАЙМИЯ');
-      aliases.add('ИВАН НЯСР');
     }
     return Array.from(this.users.values()).find(
       (u) =>
@@ -423,48 +375,6 @@ class InMemoryDatabase {
       success: true,
       message: `Счет успешно заморожен на ${days} дней (до ${freezeUntil.toLocaleDateString('ru-RU')}). Все операции заблокированы, налог на бездействие отключен.`,
       updatedCard: card,
-    };
-  }
-
-  async simulateInactivity(
-    cardId: string,
-    days: number = 7
-  ): Promise<{
-    success: boolean;
-    message: string;
-    updatedCard?: BankCard;
-    taxApplied?: boolean;
-    taxAmount?: number;
-  }> {
-    const card = this.cards.get(cardId);
-    if (!card) {
-      return { success: false, message: 'Карта не найдена' };
-    }
-
-    if (card.isFrozen || card.status === 'frozen') {
-      return {
-        success: false,
-        message: 'Счет заморожен по Указу №2. Налог на бездействие не начисляется!',
-        updatedCard: card,
-      };
-    }
-
-    const simulatedDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
-    card.lastActivityDate = simulatedDate;
-
-    const beforeBal = card.balance;
-    const updatedCard = await this.checkAndApplyInactivityTax(card);
-    const taxAmount = beforeBal - updatedCard.balance;
-
-    return {
-      success: true,
-      message:
-        taxAmount > 0
-          ? `Симуляция ${days} дней бездействия: списан налог 7% (${taxAmount.toLocaleString('ru-RU')} Королевских Франков) в пользу Казны Лаймии!`
-          : `Симуляция ${days} дней бездействия: баланс 0 Королевских Франков, налог не списан.`,
-      updatedCard,
-      taxApplied: taxAmount > 0,
-      taxAmount,
     };
   }
 
@@ -1261,26 +1171,6 @@ export const dbService = {
       }
     }
     return inMemoryDb.freezeCard(cardId, days);
-  },
-
-  async simulateInactivity(
-    cardId: string,
-    days: number = 7
-  ): Promise<{
-    success: boolean;
-    message: string;
-    updatedCard?: BankCard;
-    taxApplied?: boolean;
-    taxAmount?: number;
-  }> {
-    if (isFirebaseConfigured) {
-      try {
-        return await withTimeout(firebaseDbService.simulateInactivity(cardId, days));
-      } catch (err) {
-        console.warn('[Database] Supabase simulateInactivity error, using built-in storage:', err);
-      }
-    }
-    return inMemoryDb.simulateInactivity(cardId, days);
   },
 
   async getTransactionsByCardNumber(cardNumber: string): Promise<Transaction[]> {

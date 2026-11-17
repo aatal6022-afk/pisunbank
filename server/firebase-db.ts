@@ -9,6 +9,7 @@ import {
   getDocs,
   setDoc,
   updateDoc,
+  deleteDoc,
   query,
   where,
   Firestore,
@@ -127,13 +128,6 @@ class FirebaseDatabaseService {
           gameNickname: 'КАЗНА ЛАЙМИИ',
         },
       },
-      {
-        id: 'usr_ivan',
-        fields: {
-          email: 'ivan.laimia@gmail.com',
-          gameNickname: 'ИВАН ЛАЙМИЯ',
-        },
-      },
     ];
 
     for (const patch of userPatches) {
@@ -151,32 +145,21 @@ class FirebaseDatabaseService {
       }
     }
 
-    const cardPatches: Array<{ id: string; cardHolderName: string }> = [
-      { id: 'crd_treasury', cardHolderName: 'КАЗНА ЛАЙМИИ' },
-      { id: 'crd_ivan', cardHolderName: 'ИВАН ЛАЙМИЯ' },
-    ];
-
-    for (const patch of cardPatches) {
-      const ref = doc(firestore, 'cards', patch.id);
-      const snap = await getDoc(ref);
-      if (!snap.exists()) continue;
-      const data = snap.data() as BankCard;
+    const treasuryCardRef = doc(firestore, 'cards', 'crd_treasury');
+    const treasuryCardSnap = await getDoc(treasuryCardRef);
+    if (treasuryCardSnap.exists()) {
+      const data = treasuryCardSnap.data() as BankCard;
       if (hasLegacyBrand(data.cardHolderName)) {
-        await updateDoc(ref, { cardHolderName: patch.cardHolderName });
+        await updateDoc(treasuryCardRef, { cardHolderName: 'КАЗНА ЛАЙМИИ' });
       }
     }
 
-    const txRef = doc(firestore, 'transactions', 'tx_init_1');
-    const txSnap = await getDoc(txRef);
-    if (txSnap.exists()) {
-      const data = txSnap.data() as Transaction;
-      const updates: Record<string, string> = {};
-      if (hasLegacyBrand(data.senderName)) updates.senderName = 'Казна Королевства Лаймия';
-      if (hasLegacyBrand(data.description)) updates.description = 'Подъемные субсидии от Минфина Королевства Лаймия';
-      if (Object.keys(updates).length > 0) {
-        await updateDoc(txRef, updates);
-      }
-    }
+    // Remove legacy demo/test citizen profile documents from Firestore if present
+    await Promise.all([
+      deleteDoc(doc(firestore, 'users', 'usr_ivan')).catch(() => {}),
+      deleteDoc(doc(firestore, 'cards', 'crd_ivan')).catch(() => {}),
+      deleteDoc(doc(firestore, 'transactions', 'tx_init_1')).catch(() => {}),
+    ]);
   }
 
   async seedInitialData() {
@@ -190,7 +173,7 @@ class FirebaseDatabaseService {
         return; // Already initialized
       }
 
-      console.log('[Firebase] Seeding initial Treasury and demo accounts into Firestore...');
+      console.log('[Firebase] Seeding initial State Treasury account into Firestore...');
 
       // 1. Supreme Admin user (for current user account aatal6022@gmail.com)
       const adminUser: User = {
@@ -220,21 +203,7 @@ class FirebaseDatabaseService {
         isEmployee: true,
       };
 
-      // 3. Demo citizen user Ivan
-      const ivanUser: User = {
-        id: 'usr_ivan',
-        email: 'ivan.laimia@gmail.com',
-        password: '123',
-        googleId: 'google_ivan_demo',
-        name: 'Иван Гражданин',
-        gameNickname: 'ИВАН ЛАЙМИЯ',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80',
-        createdAt: new Date().toISOString(),
-        isAdmin: false,
-        isEmployee: false,
-      };
-
-      // 4. Treasury Card (1,000,000,000 Королевских Франков, Gold, CVV 777)
+      // 3. Treasury Card (1,000,000,000 Королевских Франков, Gold, CVV 777)
       const govtCard: BankCard = {
         id: 'crd_treasury',
         userId: 'usr_govt',
@@ -250,45 +219,11 @@ class FirebaseDatabaseService {
         lastActivityDate: new Date().toISOString(),
       };
 
-      // 5. Citizen Card (75,000 Королевских Франков, White, CVV 123)
-      const ivanCard: BankCard = {
-        id: 'crd_ivan',
-        userId: 'usr_ivan',
-        cardNumber: '450088889999',
-        cardHolderName: 'ИВАН ЛАЙМИЯ',
-        cardType: 'regular',
-        color: 'white',
-        balance: 75000,
-        issueDate: '03/26',
-        cvv: '123',
-        status: 'active',
-        createdAt: new Date().toISOString(),
-        lastActivityDate: new Date().toISOString(),
-      };
-
-      // 6. Initial subsidy transaction
-      const initTx: Transaction = {
-        id: 'tx_init_1',
-        cardId: 'crd_ivan',
-        cardNumber: '450088889999',
-        fromCardNumber: '450000000001',
-        toCardNumber: '450088889999',
-        senderName: 'Казна Королевства Лаймия',
-        recipientName: 'Иван Гражданин',
-        amount: 75000,
-        type: 'transfer_in',
-        description: 'Подъемные субсидии от Минфина Королевства Лаймия',
-        createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
-      };
-
       await setDoc(doc(firestore, 'users', adminUser.id), adminUser);
       await setDoc(doc(firestore, 'users', legacyAdminUser.id), legacyAdminUser);
-      await setDoc(doc(firestore, 'users', ivanUser.id), ivanUser);
       await setDoc(doc(firestore, 'cards', govtCard.id), govtCard);
-      await setDoc(doc(firestore, 'cards', ivanCard.id), ivanCard);
-      await setDoc(doc(firestore, 'transactions', initTx.id), initTx);
 
-      console.log('[Firebase] Seed data successfully committed to Firestore.');
+      console.log('[Firebase] Treasury seed data successfully committed to Firestore.');
     } catch (e: any) {
       console.warn('[Firebase] Seeding error (non-fatal):', e.message);
     }
@@ -341,10 +276,6 @@ class FirebaseDatabaseService {
     if (clean === 'КАЗНА ЛАЙМИИ' || clean === 'КАЗНА НЯСР') {
       aliases.add('КАЗНА ЛАЙМИИ');
       aliases.add('КАЗНА НЯСР');
-    }
-    if (clean === 'ИВАН ЛАЙМИЯ' || clean === 'ИВАН НЯСР') {
-      aliases.add('ИВАН ЛАЙМИЯ');
-      aliases.add('ИВАН НЯСР');
     }
     const allUsers = await this.getUsers();
     return allUsers.find(
@@ -953,29 +884,6 @@ class FirebaseDatabaseService {
     }
 
     return card;
-  }
-
-  async simulateInactivity(cardId: string, days: number): Promise<{ success: boolean; message: string; card?: BankCard }> {
-    if (!firestore) return { success: false, message: 'База данных недоступна' };
-
-    const cards = await this.getCards();
-    const card = cards.find((c) => c.id === cardId || c.cardNumber === cardId);
-    if (!card) {
-      return { success: false, message: 'Карта не найдена' };
-    }
-
-    const simulatedDate = new Date(Date.now() - days * 86400000).toISOString();
-    card.lastActivityDate = simulatedDate;
-
-    await updateDoc(doc(firestore, 'cards', card.id), {
-      lastActivityDate: simulatedDate,
-    });
-
-    return {
-      success: true,
-      message: `Установлена неактивность ${days} дней для карты ${card.cardNumber}`,
-      card,
-    };
   }
 
   async applyCredit(cardId: string, amount: number, termMonths: number = 12): Promise<{ success: boolean; message: string; loan?: CreditLoan; updatedBalance?: number }> {

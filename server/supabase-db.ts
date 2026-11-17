@@ -464,43 +464,6 @@ export const supabaseDbService = {
     };
   },
 
-  async simulateInactivity(
-    cardId: string,
-    days: number = 7
-  ): Promise<{ success: boolean; message: string; updatedCard?: BankCard; taxApplied?: boolean; taxAmount?: number }> {
-    if (!supabase) return { success: false, message: 'База данных не подключена' };
-
-    const { data: rawCard } = await supabase.from('cards').select('*').eq('id', cardId).maybeSingle();
-    if (!rawCard) return { success: false, message: 'Карта не найдена' };
-
-    let card = mapCardFromRow(rawCard);
-    if (card.isFrozen || card.status === 'frozen') {
-      return {
-        success: false,
-        message: 'Счет заморожен по Указу №2. Налог на бездействие не начисляется!',
-        updatedCard: card,
-      };
-    }
-
-    const simulatedDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
-    card.lastActivityDate = simulatedDate;
-    await supabase.from('cards').update({ last_activity_date: simulatedDate }).eq('id', card.id);
-
-    const beforeBal = card.balance;
-    card = await this.checkAndApplyInactivityTax(card);
-    const taxAmount = beforeBal - card.balance;
-
-    return {
-      success: true,
-      message: taxAmount > 0
-        ? `Симуляция ${days} дней бездействия: списан налог 7% (${taxAmount.toLocaleString('ru-RU')} Королевских Франков) в пользу Казны Лаймии!`
-        : `Симуляция ${days} дней бездействия: баланс 0 Королевских Франков, налог не списан.`,
-      updatedCard: card,
-      taxApplied: taxAmount > 0,
-      taxAmount: taxAmount,
-    };
-  },
-
   async getTransactionsByCardNumber(cardNumber: string): Promise<Transaction[]> {
     if (!supabase) return [];
     const cleanNum = cardNumber.replace(/\s+/g, '');

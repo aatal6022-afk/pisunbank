@@ -336,21 +336,6 @@ export const app = express();
     }
   });
 
-  // Simulate Inactivity for testing
-  app.post('/api/cards/simulate-inactivity', async (req, res) => {
-    try {
-      const { cardId, days } = req.body;
-      if (!cardId) {
-        return res.status(400).json({ success: false, message: 'Не указан cardId' });
-      }
-
-      const result = await dbService.simulateInactivity(cardId, Number(days || 7));
-      res.json(result);
-    } catch (err: any) {
-      res.status(500).json({ success: false, message: err.message });
-    }
-  });
-
   // ------------------------------------------------------------------
   // ADMIN & TREASURY API ROUTES (pinkiscammerinfo@gmail.com)
   // ------------------------------------------------------------------

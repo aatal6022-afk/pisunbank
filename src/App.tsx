@@ -427,7 +427,6 @@ export default function App() {
           card={activeCard}
           onOpenFreezeModal={() => setIsFreezeOpen(true)}
           onOpenLawsModal={() => setIsLawsOpen(true)}
-          onCardUpdated={handleCardUpdated}
         />
 
         {/* Two Column Layout: Card Visual View & Card Details / Cards Switcher */}

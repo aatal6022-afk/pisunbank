@@ -20,9 +20,9 @@ export const ApiDocsModal: React.FC<ApiDocsModalProps> = ({
   const [copied, setCopied] = useState<string | null>(null);
 
   // Terminal Test Form State
-  const [testFromCardNumber, setTestFromCardNumber] = useState(userCardNumber || '450088889999');
-  const [testFromCvv, setTestFromCvv] = useState(userCvv || '123');
-  const [testToCardNumber, setTestToCardNumber] = useState('450011112222');
+  const [testFromCardNumber, setTestFromCardNumber] = useState(userCardNumber || '');
+  const [testFromCvv, setTestFromCvv] = useState(userCvv || '');
+  const [testToCardNumber, setTestToCardNumber] = useState('');
   const [testAmount, setTestAmount] = useState('1500');
   const [testMerchant, setTestMerchant] = useState('Лаймия Выплата');
   const [testDescription, setTestDescription] = useState('Перевод с карты на карту по API');
@@ -111,7 +111,7 @@ async function payWithLaimiaBank(cardNumber, cvv, amount, orderDetails) {
   const chargeCurlSnippet = `curl -X POST ${appUrl}/api/v1/payment/charge \\
   -H "Content-Type: application/json" \\
   -d '{
-    "cardNumber": "450088889999",
+    "cardNumber": "450012345678",
     "cvv": "123",
     "amount": 1500,
     "merchantName": "Магазин Лаймии",
@@ -150,9 +150,9 @@ async function transferBetweenCards(fromCardNumber, fromCvv, toCardNumber, amoun
   const depositCurlSnippet = `curl -X POST ${appUrl}/api/v1/card/deposit \\
   -H "Content-Type: application/json" \\
   -d '{
-    "fromCardNumber": "450088889999",
+    "fromCardNumber": "450012345678",
     "fromCvv": "123",
-    "toCardNumber": "450011112222",
+    "toCardNumber": "450087654321",
     "amount": 2500,
     "description": "Перевод с карты на карту по API"
   }'`;
